@@ -3,8 +3,20 @@
   <groupId>Entrenamendua3</groupId>
   <artifactId>Entrenamendua3</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  
   <build>
     <sourceDirectory>src</sourceDirectory>
+    
+    <resources>
+        <resource>
+            <directory>src</directory>
+            <includes>
+                <include>**/*.png</include>
+                <include>**/*.jpg</include>
+            </includes>
+        </resource>
+    </resources>
+    
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -15,14 +27,13 @@
       </plugin>
     </plugins>
   </build>
+  
   <dependencies>
-  	<!-- Connector para la base de datos -->
   	<dependency>
     	<groupId>com.mysql</groupId>
     	<artifactId>mysql-connector-j</artifactId>
     	<version>9.1.0</version>
 	</dependency>
-	<!-- Connector para la base de datos orientada a objetos -->
 	<dependency>
         <groupId>com.objectdb</groupId>
         <artifactId>objectdb</artifactId>
@@ -33,7 +44,6 @@
         <artifactId>javax.persistence</artifactId>
         <version>2.2.1</version>
     </dependency>
-    <!-- Connectores para crear xml -->
     <dependency>
     	<groupId>jakarta.xml.bind</groupId>
     	<artifactId>jakarta.xml.bind-api</artifactId>
@@ -45,12 +55,12 @@
     	<artifactId>jaxb-runtime</artifactId>
     	<version>4.0.2</version>
 	</dependency>
-</dependencies>
+  </dependencies>
 
-<repositories>
-    <repository>
-        <id>objectdb</id>
-        <url>https://m2.objectdb.com</url>
-    </repository>
-</repositories>
+  <repositories>
+      <repository>
+          <id>objectdb</id>
+          <url>https://m2.objectdb.com</url>
+      </repository>
+  </repositories>
 </project>

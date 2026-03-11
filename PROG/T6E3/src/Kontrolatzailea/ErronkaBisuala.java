@@ -406,20 +406,15 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     // 7. Irteera Metodoa
     // ==========================================================
     public static void atera() {
-        int respuesta = JOptionPane.showConfirmDialog(null, "¿Atera baino lehen, gorde nahi duzu?", "Berrespena", JOptionPane.YES_NO_CANCEL_OPTION);
+        int respuesta = JOptionPane.showConfirmDialog(null, "¿Seguru atera nahi duzula?", "Agur", JOptionPane.YES_NO_OPTION);
 
         if (respuesta == JOptionPane.YES_OPTION) {
-            gordeDatuak();
             System.exit(0);
         } else if (respuesta == JOptionPane.NO_OPTION) {
-            System.exit(0);
+            
         }
     }
     
-    private static void gordeDatuak() {
-        // Zure DAO-ko gordeDatuak deituko da hemen
-    }
-
     // ==========================================================
     // 8. Main (Abiarazlea)
     // ==========================================================
