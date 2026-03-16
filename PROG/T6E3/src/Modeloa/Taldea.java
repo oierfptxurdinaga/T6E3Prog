@@ -1,6 +1,7 @@
 package Modeloa;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 /**
@@ -26,7 +27,7 @@ public class Taldea implements Serializable {
     private static final long serialVersionUID = 1L;
 	
 	private String Izena;
-	private String SorreraUrtea;
+	private LocalDate SorreraUrtea;
 	private String Lehendakari;
 	private int N_Bazkideak;
 	private int PuntuakF;
@@ -36,7 +37,7 @@ public class Taldea implements Serializable {
 	private int Galdutakoak;
 	private ArrayList<Jokalaria> Jokalariak;
 	
-	public Taldea(String izena,  String sorreraUrtea, String lehendakari, int n_Bazkideak, int puntuakF,
+	public Taldea(String izena,  LocalDate sorreraUrtea, String lehendakari, int n_Bazkideak, int puntuakF,
 			int puntuakC, int puntuTotalak, int irabazitakoak, int galdutakoak, ArrayList<Jokalaria> jokalariak) {
 		super();
 		Izena = izena;
@@ -51,6 +52,20 @@ public class Taldea implements Serializable {
 		this.Jokalariak = jokalariak;
 	}
 
+	public Taldea(String izena, LocalDate sorreraUrtea, String lehendakari, int n_Bazkideak) {
+		super();
+		Izena = izena;
+		SorreraUrtea = sorreraUrtea;
+		Lehendakari = lehendakari;
+		N_Bazkideak = n_Bazkideak;
+		PuntuakF = 0;
+		PuntuakC = 0;
+		PuntuTotalak = 0;
+		Irabazitakoak = 0;
+		Galdutakoak = 0;
+		this.Jokalariak = new ArrayList<>();
+	}
+		
 	public String getIzena() {
 		return Izena;
 	}
@@ -123,7 +138,7 @@ public class Taldea implements Serializable {
 		this.Jokalariak = jokalariak;
 	}
 
-	public String getSorreraUrtea() {
+	public LocalDate getSorreraUrtea() {
 		return SorreraUrtea;
 	}
 	@Override

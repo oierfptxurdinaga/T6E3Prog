@@ -1,0 +1,5 @@
+Administradorea: Erabiltzailea: admin Pasahitza: 12345
+
+Presidentea: Erabiltzailea: presi Pasahitza: 12345
+
+Arrunta: Erabiltzailea: arrunta Pasahitza: 12345 

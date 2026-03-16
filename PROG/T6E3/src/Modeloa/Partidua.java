@@ -1,4 +1,7 @@
 package Modeloa;
+
+import java.time.LocalDate;
+
 /**
  * Partidua klaseak ligako partida bat irudikatzen du.
  * <p>
@@ -25,9 +28,9 @@ public class Partidua {
 	private String TaldeBisitari;
 	private int ResultLokala;
 	private int ResulBisitari;
-	private String Data;
+	private LocalDate Data;
 	private String Ordua;
-	public Partidua(String taldeLokala, String taldeBisitari, int resultLokala, int resulBisitari, String data,
+	public Partidua(String taldeLokala, String taldeBisitari, int resultLokala, int resulBisitari, LocalDate data,
 			String ordua) {
 		super();
 		TaldeLokala = taldeLokala;
@@ -61,10 +64,10 @@ public class Partidua {
 	public void setResulBisitari(int resulBisitari) {
 		ResulBisitari = resulBisitari;
 	}
-	public String getData() {
+	public LocalDate getData() {
 		return Data;
 	}
-	public void setData(String data) {
+	public void setData(LocalDate data) {
 		Data = data;
 	}
 	public String getOrdua() {

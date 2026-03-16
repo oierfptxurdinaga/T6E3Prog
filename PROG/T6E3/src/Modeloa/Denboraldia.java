@@ -1,5 +1,6 @@
 package Modeloa;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 /**
  * Denboraldia klaseak ligako denboraldi bat irudikatzen du.
@@ -20,20 +21,20 @@ import java.util.ArrayList;
  * @version 1.0
  */
 public class Denboraldia {
-	private String Data;
+	private LocalDate Data;
 	private ArrayList<Jaurdunaldia> Denboraldia;
 	private ArrayList<Puntuazioa> DenboraldiaP;
-	public Denboraldia(String data, ArrayList<Jaurdunaldia> denboraldia, ArrayList<Puntuazioa> denboraldiaP) {
+	public Denboraldia(LocalDate data, ArrayList<Jaurdunaldia> denboraldia, ArrayList<Puntuazioa> denboraldiaP) {
 		super();
 		Data = data;
 		Denboraldia = denboraldia;
 		DenboraldiaP = denboraldiaP;
 	}
 	
-	public String getData() {
+	public LocalDate getData() {
 		return Data;
 	}
-	public void setData(String data) {
+	public void setData(LocalDate data) {
 		Data = data;
 	}
 	public ArrayList<Jaurdunaldia> getDenboraldia() {

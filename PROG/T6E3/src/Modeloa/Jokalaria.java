@@ -1,6 +1,7 @@
 package Modeloa;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 /**
  * Jokalaria klaseak ligako jokalari bat irudikatzen du.
  * <p>
@@ -22,14 +23,14 @@ public class Jokalaria implements Serializable, Comparable<Jokalaria> {
 	
 	private String Izena;
 	private String Abizena;
-	private String JaiotzeData;
+	private LocalDate JaiotzeData;
 	private String NAN;
 	private String Taldea;
 	private int Prezioa;
 	private int JokalarienPuntuak;
 
 	
-	public Jokalaria(String izena, String abizena, String jaiotzeData, String nAN, String taldea, int prezioa,
+	public Jokalaria(String izena, String abizena, LocalDate jaiotzeData, String nAN, String taldea, int prezioa,
 			int jokalarienPuntuak) {
 		super();
 		Izena = izena;
@@ -91,12 +92,19 @@ public class Jokalaria implements Serializable, Comparable<Jokalaria> {
 		JokalarienPuntuak = jokalarienPuntuak;
 	}
 
-	public String getJaiotzeData() {
+	public LocalDate getJaiotzeData() {
 		return JaiotzeData;
+	}
+	public void setJaiotzeData(LocalDate jaiotzeData) {
+		JaiotzeData = jaiotzeData;
 	}
 
 	public String getNAN() {
 		return NAN;
+	}
+	
+	public void setNAN(String nAN) {
+		NAN = nAN;
 	}
 	@Override
 	public int compareTo(Jokalaria besteJokalaria) {

@@ -2,11 +2,21 @@ package Kontrolatzailea;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import DAO.ErabiltzaileakDao;
+import DAO.JokalariakDAO;
+import DAO.TaldeakDAO;
+import Metodoak.Metodoak;
+import Modeloa.ErabiltzaileMota;
+import Modeloa.Jokalaria;
+import Modeloa.Taldea;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
 
 public class ErronkaBisuala extends JFrame implements ActionListener, WindowListener {
 
@@ -18,7 +28,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     private Font titleFont;
 
     // --- Panelen Osagaiak ---
-    private JPanel LoginPanela, HasierakoPanela, KlasifikazioaPanela, EmaitzaPanela, TaldeakPanela, JokalariakPanela;
+    private JPanel LoginPanela, HasierakoPanela, KlasifikazioaPanela, EmaitzaPanela, TaldeakJokalariakPanela, JokalariakPanela;
     
     // Login
     private JLabel logoaImg1, erabiltzaileak, pasahitza;
@@ -28,7 +38,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
 
     // Hasiera
     private JLabel logoaImg2;
-    private JButton atzerantz, atera2, klasifikazioaIkusi, sartuEmaitza, taldeakIkusi, jokalariakAldatu;
+    private JButton atzerantz, atera2, klasifikazioaIkusi, sartuEmaitza, taldeakjokalariakIkusi, jokalariakAldatu;
 
     // Klasifikazioa
     private JButton atzerantzKlasif, ateraKlasif;
@@ -36,9 +46,10 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     private DefaultTableModel modeloTabla;
     private JScrollPane scrollTabla;
 
-    // Taldeak Ikusi
+    // Taldeak eta Jokalariak Ikusi
     private JComboBox<String> comboBox;
     private JTable tablaPequena, tablaGrande;
+    private DefaultTableModel modeloPequena, modeloGrande;
     private JButton atzerantzTaldeak, ateraTaldeak;
     
     // Emaitza
@@ -49,8 +60,15 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     // Jokalariak
     private JComboBox<String> comboIzquierda, comboDerecha;
     private JTable tablaIzquierda, tablaDerecha;
-    private JButton btnAldatu, btnIrten, btnAtera;
-
+    private JButton btnAldatu, atzerantzjokalariak, btnAtera;
+    
+    // DAO-ak instantziatu
+    private TaldeakDAO tdao = new TaldeakDAO();
+    private JokalariakDAO jdao = new JokalariakDAO();
+    
+    // Taldeak eta Jokalariak zerrendak erabilitzeko
+    private ArrayList<Taldea> taldeak;
+    private ArrayList<Jokalaria> jokalariak;
 
     // ==========================================================
     // 2. Eraikitzailea (Constructor)
@@ -58,7 +76,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     public ErronkaBisuala() {
         setTitle("FNFS Liga Kudeatzailea");
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); 
-        setSize(802, 604); // TAMAÑO COMPACTADO A 800x600
+        setSize(802, 604); 
         setLocationRelativeTo(null);
         titleFont = new Font("Verdana", Font.BOLD, 24);
 
@@ -78,7 +96,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         contentPanel.add(HasierakoPanela, "Hasiera");
         contentPanel.add(KlasifikazioaPanela, "Klasifikazioa");
         contentPanel.add(EmaitzaPanela, "Emaitzak");
-        contentPanel.add(TaldeakPanela, "Taldeak");
+        contentPanel.add(TaldeakJokalariakPanela, "Taldeak");
         contentPanel.add(JokalariakPanela, "Jokalariak");
 
         cardLayout.show(contentPanel, "Login");
@@ -110,7 +128,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         
         sartu = new JButton("Sartu");
         sartu.setBounds(374, 390, 100, 30);
-        this.getRootPane().setDefaultButton(sartu); // Enter sakatzean exekutatzeko
+        this.getRootPane().setDefaultButton(sartu); 
         
         atera1 = new JButton("Atera");
         atera1.setBounds(675, 148, 80, 30);
@@ -137,8 +155,8 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         sartuEmaitza = new JButton("Sartu Emaitza"); 
         sartuEmaitza.setBounds(450, 350, 200, 40);
         
-        taldeakIkusi = new JButton("Taldeak ikusi"); 
-        taldeakIkusi.setBounds(150, 420, 200, 40);
+        taldeakjokalariakIkusi = new JButton("Taldeak eta Jokalariak ikusi"); 
+        taldeakjokalariakIkusi.setBounds(150, 420, 200, 40);
         
         jokalariakAldatu = new JButton("Jokalariak Aldatu"); 
         jokalariakAldatu.setBounds(450, 420, 200, 40);
@@ -146,7 +164,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         HasierakoPanela.add(logoaImg2); 
         HasierakoPanela.add(atzerantz); HasierakoPanela.add(atera2);
         HasierakoPanela.add(klasifikazioaIkusi); HasierakoPanela.add(sartuEmaitza);
-        HasierakoPanela.add(taldeakIkusi); HasierakoPanela.add(jokalariakAldatu);
+        HasierakoPanela.add(taldeakjokalariakIkusi); HasierakoPanela.add(jokalariakAldatu);
 
         // --- KLASIFIKAZIOA PANELA  ---
         KlasifikazioaPanela = new JPanel(null);
@@ -201,34 +219,49 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         btnAldatu.setBounds(360, 240, 60, 40);
         JokalariakPanela.add(btnAldatu);
 
-        btnIrten = new JButton("Irten");
-        btnIrten.setBounds(50, 470, 100, 30);
-        JokalariakPanela.add(btnIrten);
+        atzerantzjokalariak = new JButton("Atzerantz");
+        atzerantzjokalariak.setHorizontalAlignment(SwingConstants.RIGHT);
+        atzerantzjokalariak.setBounds(50, 470, 100, 30);
+        JokalariakPanela.add(atzerantzjokalariak);
 
         btnAtera = new JButton("Atera");
         btnAtera.setBounds(630, 470, 100, 30);
         JokalariakPanela.add(btnAtera);
 
-        // --- TALDEAK PANELA ---
-        TaldeakPanela = new JPanel(null);
+        // --- TALDEAK eta JOKALARIAK PANELA ---
+        TaldeakJokalariakPanela = new JPanel(null);
 
         comboBox = new JComboBox<>();
         comboBox.setBounds(300, 20, 200, 25);
-        TaldeakPanela.add(comboBox);
+        TaldeakJokalariakPanela.add(comboBox);
 
         String[] columnasPequena = {"SorreraUrtea", "Lehendakari", "N_Bazkideak"};
-        DefaultTableModel modeloPequena = new DefaultTableModel(columnasPequena,0);
+        modeloPequena = new DefaultTableModel(columnasPequena,0);
         tablaPequena = new JTable(modeloPequena);
         JScrollPane scrollPequena = new JScrollPane(tablaPequena);
         scrollPequena.setBounds(50, 60, 680, 40);
-        TaldeakPanela.add(scrollPequena);
+        TaldeakJokalariakPanela.add(scrollPequena);
 
         String[] columnasGrande = {"Izena","Abizena","JaiotzeData","NAN","Taldea","Prezioa","JokalariarenPuntuak"};
-        DefaultTableModel modeloGrande = new DefaultTableModel(columnasGrande,0);
+        modeloGrande = new DefaultTableModel(columnasGrande,0);
         tablaGrande = new JTable(modeloGrande);
         JScrollPane scrollGrande = new JScrollPane(tablaGrande);
         scrollGrande.setBounds(50, 120, 680, 320);
-        TaldeakPanela.add(scrollGrande);
+        TaldeakJokalariakPanela.add(scrollGrande);
+        
+        // ------------------------------------------------
+        // Taldeak eta Jokalariak DAO-etik lortzeko eta taldeak ComboBox-era gehitzeko logika
+        // ------------------------------------------------
+        taldeak = tdao.lortuTaldeak();
+        for (Taldea taldea : taldeak) {
+            comboBox.addItem(taldea.getIzena());
+        }
+        
+        jokalariak = jdao.lortuJokalariak();
+
+        if (comboBox.getItemCount() > 0) {
+            eguneratuTaulak((String) comboBox.getItemAt(0));
+        }
 
         atzerantzTaldeak = new JButton("Atzerantz");
         atzerantzTaldeak.setBounds(50, 470, 100, 30);
@@ -236,8 +269,8 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         ateraTaldeak = new JButton("Atera");
         ateraTaldeak.setBounds(630, 470, 100, 30);
 
-        TaldeakPanela.add(atzerantzTaldeak);
-        TaldeakPanela.add(ateraTaldeak);
+        TaldeakJokalariakPanela.add(atzerantzTaldeak);
+        TaldeakJokalariakPanela.add(ateraTaldeak);
 
         // --- EMAITZA PANELA ---
         EmaitzaPanela = new JPanel(null);
@@ -279,7 +312,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         atera2.addActionListener(this);
         klasifikazioaIkusi.addActionListener(this);
         sartuEmaitza.addActionListener(this);
-        taldeakIkusi.addActionListener(this);
+        taldeakjokalariakIkusi.addActionListener(this);
         jokalariakAldatu.addActionListener(this);
 
         // Klasifikazioa listeners
@@ -290,7 +323,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         comboIzquierda.addActionListener(this);
         comboDerecha.addActionListener(this);
         btnAldatu.addActionListener(this);
-        btnIrten.addActionListener(this);
+        atzerantzjokalariak.addActionListener(this);
         btnAtera.addActionListener(this);
 
         // Taldeak listeners
@@ -303,92 +336,8 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         gordeEmaitza.addActionListener(this);
         ateraEmaitza.addActionListener(this);
     }
-
-
     // ==========================================================
-    // 4. Ekintzen Kudeaketa (ActionListener)
-    // ==========================================================
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        Object source = e.getSource();
-
-        // --- LOGIN ---
-        if (source == sartu) {
-            // DAO Login
-            cardLayout.show(contentPanel, "Hasiera");
-            
-        // --- ATERA / IRTEN (Guztiak) ---
-        } else if (source == atera1 || source == atera2 || source == ateraKlasif || 
-                   source == btnAtera || source == ateraTaldeak || source == ateraEmaitza) {
-            atera();
-            
-        // --- HASIERA NAVEGAZIOA ---
-        } else if (source == klasifikazioaIkusi) {
-            cardLayout.show(contentPanel, "Klasifikazioa");
-        } else if (source == sartuEmaitza) {
-            cardLayout.show(contentPanel, "Emaitzak");
-        } else if (source == taldeakIkusi) {
-            cardLayout.show(contentPanel, "Taldeak");
-        } else if (source == jokalariakAldatu) {
-            cardLayout.show(contentPanel, "Jokalariak");
-
-        // --- ATZERANTZ / BUELTATU (Guztiak) ---
-        } else if (source == atzerantzKlasif || source == atzerantzEmaitza || 
-                   source == btnIrten || source == atzerantzTaldeak) {
-            cardLayout.show(contentPanel, "Hasiera");
-
-        } else if (source == atzerantz) {
-            cardLayout.show(contentPanel, "Login");
-
-        // --- BESTELAKO EKINTZAK (COMBOBOX ETA ALDATU) ---
-        } else if (source == comboIzquierda) {
-            // DAO logika
-        } else if (source == comboDerecha) {
-            // DAO logika
-        } else if (source == comboBox) {
-            // DAO logika
-        } else if (source == btnAldatu) {
-            // DAO logika
-        } else if (source == gordeEmaitza) {
-            // DAO logika
-        }
-    }
-
-    // ==========================================================
-    // 5. Irudien Kudeaketa
-    // ==========================================================
-    /**
-     * Aplikazioko osagai bisualak (irudiak) kargatzen eta esleitzen ditu.
-     */
-    private void konfiguratuOsagaiBisualak() {
-        // img1 eta img2 ezabatu dira hemendik
-        kargatuIrudia(logoaImg1, 200, 150, "/Multimedia/logoa.png");
-        kargatuIrudia(logoaImg2, 200, 150, "/Multimedia/logoa.png");
-    }
-
-    /**
-     * Irudi bat baliabideetatik kargatu eta JLabel batean ezartzen du.
-     *
-     * @param label irudia bistaratuko duen JLabel-a
-     * @param w irudiaren zabalera
-     * @param h irudiaren altuera
-     * @param path irudiaren fitxategiaren bidea
-     */
-    private void kargatuIrudia(JLabel label, int w, int h, String path) {
-        try {
-            java.net.URL url = getClass().getResource(path);
-            if (url != null) {
-                Image img = new ImageIcon(url).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
-                label.setIcon(new ImageIcon(img));
-                label.setText("");
-            }
-        } catch (Exception e) { 
-            label.setText("Error Imagen"); 
-        }
-    }
-
-    // ==========================================================
-    // 6. WindowListener Kudeaketa
+    // 4. WindowListener Kudeaketa
     // ==========================================================
     @Override
     public void windowClosing(WindowEvent e) {
@@ -403,6 +352,110 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     @Override public void windowDeactivated(WindowEvent e) {}
 
     // ==========================================================
+    // 5. Ekintzen Kudeaketa (ActionListener)
+    // ==========================================================
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object source = e.getSource();
+
+        // --- LOGIN ---
+        if (source == sartu) {
+            
+            String username = textErabiltzaile.getText();
+            String password = new String(textPasahitza.getPassword());
+            
+            if(username.trim().isEmpty() || password.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Mesedez, bete eremu guztiak.", "Errorea", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+           
+            String baimenak = Metodoak.login(username, password);
+            
+            if (baimenak != null) {
+                textErabiltzaile.setText(null);
+                textPasahitza.setText(null);
+                erakutsiPanelak(baimenak);
+                cardLayout.show(contentPanel, "Hasiera");
+            } else {
+                JOptionPane.showMessageDialog(null, "Erabiltzaile edo Pasahitz okerra", "Errorea", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        // --- ATERA / IRTEN (Guztiak) ---
+        } else if (source == atera1 || source == atera2 || source == ateraKlasif || 
+                   source == btnAtera || source == ateraTaldeak || source == ateraEmaitza) {
+            atera();
+            
+        // --- HASIERA NAVEGAZIOA ---
+        } else if (source == klasifikazioaIkusi) {
+            cardLayout.show(contentPanel, "Klasifikazioa");
+        } else if (source == sartuEmaitza) {
+            cardLayout.show(contentPanel, "Emaitzak");
+        } else if (source == taldeakjokalariakIkusi) {
+            cardLayout.show(contentPanel, "Taldeak");
+        } else if (source == jokalariakAldatu) {
+            cardLayout.show(contentPanel, "Jokalariak");
+
+        // --- ATZERANTZ / BUELTATU (Guztiak) ---
+        } else if (source == atzerantzKlasif || source == atzerantzEmaitza || 
+                   source == atzerantz || source == atzerantzTaldeak) {
+            cardLayout.show(contentPanel, "Hasiera");
+
+        } else if (source == atzerantz) {
+            cardLayout.show(contentPanel, "Login");
+
+        // --- BESTELAKO EKINTZAK (COMBOBOX ETA BOTOIAK) ---
+        } else if (source == comboBox) {
+            
+            String taldeaAukeratua = (String) comboBox.getSelectedItem();
+            if (taldeaAukeratua != null) {
+                eguneratuTaulak(taldeaAukeratua);
+            }
+            
+        } else if (source == comboIzquierda) {
+            // DAO logika
+        } else if (source == comboDerecha) {
+            // DAO logika
+        } else if (source == btnAldatu) {
+            // DAO logika
+        } else if (source == gordeEmaitza) {
+            // DAO logika
+        }
+    }
+    
+    // ==========================================================
+    // 7. Tauleen eta combobox-aren metodoa
+    // ==========================================================
+    private void eguneratuTaulak(String aukeratutakoTaldea) {
+        modeloPequena.setRowCount(0); 
+        modeloGrande.setRowCount(0); 
+
+        for (Taldea taldea : taldeak) {
+            if (taldea.getIzena().equals(aukeratutakoTaldea)) {
+                modeloPequena.addRow(new Object[]{taldea.getSorreraUrtea(), taldea.getLehendakari(), taldea.getN_Bazkideak()});
+                break;
+            }
+        }
+
+        for (Jokalaria jokalaria : jokalariak) {
+            if (jokalaria.getTaldea().equals(aukeratutakoTaldea)) {
+                modeloGrande.addRow(new Object[]{
+                    jokalaria.getIzena(),
+                    jokalaria.getAbizena(),
+                    jokalaria.getJaiotzeData(),
+                    jokalaria.getNAN(),
+                    jokalaria.getTaldea(),
+                    jokalaria.getPrezioa(),
+                    jokalaria.getJokalarienPuntuak()
+                });
+            }
+        }
+    }
+
+    
+
+    
+
+    // ==========================================================
     // 7. Irteera Metodoa
     // ==========================================================
     public static void atera() {
@@ -414,9 +467,40 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
             
         }
     }
+    // ==========================================================
+    // 8. Panelak erakusteko metodoa
+    // ==========================================================
+    
+    private void erakutsiPanelak(String baimenak) {
+        klasifikazioaIkusi.setVisible(true);
+        taldeakjokalariakIkusi.setVisible(true);
+        sartuEmaitza.setVisible(baimenak.equals("Admin"));
+        jokalariakAldatu.setVisible(baimenak.equals("Presidentea"));
+    }
     
     // ==========================================================
-    // 8. Main (Abiarazlea)
+    // 9. Irudien Kudeaketa
+    // ==========================================================
+    private void konfiguratuOsagaiBisualak() {
+        kargatuIrudia(logoaImg1, 200, 150, "/Multimedia/logoa.png");
+        kargatuIrudia(logoaImg2, 200, 150, "/Multimedia/logoa.png");
+    }
+
+    private void kargatuIrudia(JLabel label, int w, int h, String path) {
+        try {
+            java.net.URL url = getClass().getResource(path);
+            if (url != null) {
+                Image img = new ImageIcon(url).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
+                label.setIcon(new ImageIcon(img));
+                label.setText("");
+            }
+        } catch (Exception e) { 
+            label.setText("Error Imagen"); 
+        }
+    }
+    
+    // ==========================================================
+    // 10. Main (Abiarazlea)
     // ==========================================================
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> new ErronkaBisuala());
