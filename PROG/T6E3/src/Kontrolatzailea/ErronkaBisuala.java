@@ -6,6 +6,11 @@ import javax.swing.table.DefaultTableModel;
 import DAO.ErabiltzaileakDao;
 import DAO.JokalariakDAO;
 import DAO.TaldeakDAO;
+// BERRIA: Inportazio berriak Emaitzak kudeatzeko
+import DAO.JaurdunaldiaDAO;
+import DAO.PartiduaDAO;
+import Modeloa.Partidua;
+
 import Metodoak.Metodoak;
 import Modeloa.ErabiltzaileMota;
 import Modeloa.Jokalaria;
@@ -20,7 +25,11 @@ import java.util.ArrayList;
 
 public class ErronkaBisuala extends JFrame implements ActionListener, WindowListener {
 
-    // ==========================================================
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	// ==========================================================
     // 1. Atributuak (Pribatuak)
     // ==========================================================
     private CardLayout cardLayout;
@@ -52,9 +61,10 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     private DefaultTableModel modeloPequena, modeloGrande;
     private JButton atzerantzTaldeak, ateraTaldeak;
     
-    // Emaitza
-    private JTable tablaEmaitzak;
-    private DefaultTableModel modeloEmaitzak;
+    // Emaitza 
+    private JComboBox<String> cmbJaurdunaldia;
+    private JLabel lblLokala1, lblBisitaria1, lblLokala2, lblBisitaria2, lblLokala3, lblBisitaria3;
+    private JTextField txtPuntuakLokala1, txtPuntuakBisitaria1, txtPuntuakLokala2, txtPuntuakBisitaria2, txtPuntuakLokala3, txtPuntuakBisitaria3;
     private JButton atzerantzEmaitza, ateraEmaitza, gordeEmaitza;
 
     // Jokalariak
@@ -66,6 +76,13 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     private TaldeakDAO tdao = new TaldeakDAO();
     private JokalariakDAO jdao = new JokalariakDAO();
     
+    
+    private JaurdunaldiaDAO jaurdunaldiaDAO = new JaurdunaldiaDAO();
+    private PartiduaDAO partiduaDAO = new PartiduaDAO();
+    
+    //Partiduak gorde eta kargatzeko zerrenda
+    private ArrayList<Partidua> partiduGordeak = new ArrayList<>(); 
+
     // Taldeak eta Jokalariak zerrendak erabilitzeko
     private ArrayList<Taldea> taldeak;
     private ArrayList<Jokalaria> jokalariak;
@@ -242,16 +259,13 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         scrollPequena.setBounds(50, 60, 680, 40);
         TaldeakJokalariakPanela.add(scrollPequena);
 
-        String[] columnasGrande = {"Izena","Abizena","JaiotzeData","NAN","Taldea","Prezioa","JokalariarenPuntuak"};
+        String[] columnasGrande = {"Izena","Abizena","JaiotzeData","NAN","Taldea","Prezioa"};
         modeloGrande = new DefaultTableModel(columnasGrande,0);
         tablaGrande = new JTable(modeloGrande);
         JScrollPane scrollGrande = new JScrollPane(tablaGrande);
         scrollGrande.setBounds(50, 120, 680, 320);
         TaldeakJokalariakPanela.add(scrollGrande);
         
-        // ------------------------------------------------
-        // Taldeak eta Jokalariak DAO-etik lortzeko eta taldeak ComboBox-era gehitzeko logika
-        // ------------------------------------------------
         taldeak = tdao.lortuTaldeak();
         for (Taldea taldea : taldeak) {
             comboBox.addItem(taldea.getIzena());
@@ -277,12 +291,99 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         JLabel titleEmaitza = new JLabel("LIGAKO EMAITZAK", JLabel.CENTER);
         titleEmaitza.setBounds(0, 20, 800, 30);
         titleEmaitza.setFont(titleFont);
+        EmaitzaPanela.add(titleEmaitza);
 
-        modeloEmaitzak = new DefaultTableModel(new String[]{"Jornada / Partidua", "Puntuak", "vs", "Puntuak", "Kanpoko Taldea"}, 0);
-        tablaEmaitzak = new JTable(modeloEmaitzak);
-        JScrollPane scrollEmaitzak = new JScrollPane(tablaEmaitzak);
-        scrollEmaitzak.setBounds(50, 80, 680, 360);
+        JLabel lblAukeratuJaurdunaldia = new JLabel("Aukeratu Jaurdunaldia:");
+        lblAukeratuJaurdunaldia.setBounds(250, 80, 150, 25);
+        EmaitzaPanela.add(lblAukeratuJaurdunaldia);
 
+        cmbJaurdunaldia = new JComboBox<>();
+        cmbJaurdunaldia.setBounds(400, 80, 150, 25);
+        
+        // Jaurdunaldiak zuzenean inizializazioan kargatzen ditugu 
+        ArrayList<Integer> zenbakiak = jaurdunaldiaDAO.lortuJaurdunaldienZenbakiak();
+        for (Integer zenbakia : zenbakiak) {
+            cmbJaurdunaldia.addItem(zenbakia + ". Jaurdunaldia");
+        }
+        
+        EmaitzaPanela.add(cmbJaurdunaldia);
+
+        // --- 1. PARTIDUA ---
+        JPanel partidua1Panela = new JPanel(null);
+        partidua1Panela.setBounds(100, 150, 600, 50);
+        EmaitzaPanela.add(partidua1Panela);
+
+        lblLokala1 = new JLabel("1. Talde Lokala", SwingConstants.RIGHT);
+        lblLokala1.setBounds(0, 10, 200, 30);
+        partidua1Panela.add(lblLokala1);
+
+        txtPuntuakLokala1 = new JTextField();
+        txtPuntuakLokala1.setBounds(220, 10, 50, 30);
+        partidua1Panela.add(txtPuntuakLokala1);
+
+        JLabel banatzailea1 = new JLabel("-", SwingConstants.CENTER);
+        banatzailea1.setBounds(280, 10, 40, 30);
+        partidua1Panela.add(banatzailea1);
+
+        txtPuntuakBisitaria1 = new JTextField();
+        txtPuntuakBisitaria1.setBounds(330, 10, 50, 30);
+        partidua1Panela.add(txtPuntuakBisitaria1);
+
+        lblBisitaria1 = new JLabel("1. Talde Bisitaria", SwingConstants.LEFT);
+        lblBisitaria1.setBounds(400, 10, 200, 30);
+        partidua1Panela.add(lblBisitaria1);
+
+        // --- 2. PARTIDUA ---
+        JPanel partidua2Panela = new JPanel(null);
+        partidua2Panela.setBounds(100, 220, 600, 50);
+        EmaitzaPanela.add(partidua2Panela);
+
+        lblLokala2 = new JLabel("2. Talde Lokala", SwingConstants.RIGHT);
+        lblLokala2.setBounds(0, 10, 200, 30);
+        partidua2Panela.add(lblLokala2);
+
+        txtPuntuakLokala2 = new JTextField();
+        txtPuntuakLokala2.setBounds(220, 10, 50, 30);
+        partidua2Panela.add(txtPuntuakLokala2);
+
+        JLabel banatzailea2 = new JLabel("-", SwingConstants.CENTER);
+        banatzailea2.setBounds(280, 10, 40, 30);
+        partidua2Panela.add(banatzailea2);
+
+        txtPuntuakBisitaria2 = new JTextField();
+        txtPuntuakBisitaria2.setBounds(330, 10, 50, 30);
+        partidua2Panela.add(txtPuntuakBisitaria2);
+
+        lblBisitaria2 = new JLabel("2. Talde Bisitaria", SwingConstants.LEFT);
+        lblBisitaria2.setBounds(400, 10, 200, 30);
+        partidua2Panela.add(lblBisitaria2);
+
+        // --- 3. PARTIDUA ---
+        JPanel partidua3Panela = new JPanel(null);
+        partidua3Panela.setBounds(100, 290, 600, 50);
+        EmaitzaPanela.add(partidua3Panela);
+
+        lblLokala3 = new JLabel("3. Talde Lokala", SwingConstants.RIGHT);
+        lblLokala3.setBounds(0, 10, 200, 30);
+        partidua3Panela.add(lblLokala3);
+
+        txtPuntuakLokala3 = new JTextField();
+        txtPuntuakLokala3.setBounds(220, 10, 50, 30);
+        partidua3Panela.add(txtPuntuakLokala3);
+
+        JLabel banatzailea3 = new JLabel("-", SwingConstants.CENTER);
+        banatzailea3.setBounds(280, 10, 40, 30);
+        partidua3Panela.add(banatzailea3);
+
+        txtPuntuakBisitaria3 = new JTextField();
+        txtPuntuakBisitaria3.setBounds(330, 10, 50, 30);
+        partidua3Panela.add(txtPuntuakBisitaria3);
+
+        lblBisitaria3 = new JLabel("3. Talde Bisitaria", SwingConstants.LEFT);
+        lblBisitaria3.setBounds(400, 10, 200, 30);
+        partidua3Panela.add(lblBisitaria3);
+
+        // --- BOTOIAK ---
         atzerantzEmaitza = new JButton("Atzerantz"); 
         atzerantzEmaitza.setBounds(50, 470, 100, 30);
 
@@ -292,12 +393,16 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         ateraEmaitza = new JButton("Atera"); 
         ateraEmaitza.setBounds(630, 470, 100, 30);
 
-        EmaitzaPanela.add(titleEmaitza);
-        EmaitzaPanela.add(scrollEmaitzak);
         EmaitzaPanela.add(atzerantzEmaitza);
         EmaitzaPanela.add(gordeEmaitza);
         EmaitzaPanela.add(ateraEmaitza);
 
+        // BERRIA: Badaezpada, lehenengo jaurdunaldia kargatzen dugu irekitzean
+        if (cmbJaurdunaldia.getItemCount() > 0) {
+            String aukera = (String) cmbJaurdunaldia.getItemAt(0);
+            int jaurdunaldiZenbakia = Integer.parseInt(aukera.split("\\.")[0]);
+            kargatuPartiduak(jaurdunaldiZenbakia);
+        }
 
         // ==========================================================
         // --- THE LISTENERS (Botoien eta osagaien ekintzak) ---
@@ -332,10 +437,12 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         ateraTaldeak.addActionListener(this);
 
         // Emaitzak listeners
+        cmbJaurdunaldia.addActionListener(this); 
         atzerantzEmaitza.addActionListener(this);
         gordeEmaitza.addActionListener(this);
         ateraEmaitza.addActionListener(this);
     }
+    
     // ==========================================================
     // 4. WindowListener Kudeaketa
     // ==========================================================
@@ -360,7 +467,6 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
 
         // --- LOGIN ---
         if (source == sartu) {
-            
             String username = textErabiltzaile.getText();
             String password = new String(textPasahitza.getPassword());
             
@@ -397,7 +503,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
 
         // --- ATZERANTZ / BUELTATU (Guztiak) ---
         } else if (source == atzerantzKlasif || source == atzerantzEmaitza || 
-                   source == atzerantz || source == atzerantzTaldeak) {
+                   source == atzerantzTaldeak) {
             cardLayout.show(contentPanel, "Hasiera");
 
         } else if (source == atzerantz) {
@@ -405,11 +511,48 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
 
         // --- BESTELAKO EKINTZAK (COMBOBOX ETA BOTOIAK) ---
         } else if (source == comboBox) {
-            
             String taldeaAukeratua = (String) comboBox.getSelectedItem();
             if (taldeaAukeratua != null) {
                 eguneratuTaulak(taldeaAukeratua);
             }
+        } else if (source == cmbJaurdunaldia) {
+            if (cmbJaurdunaldia.getSelectedItem() != null) {
+                String aukera = (String) cmbJaurdunaldia.getSelectedItem();
+                int jaurdunaldiZenbakia = Integer.parseInt(aukera.split("\\.")[0]);
+                kargatuPartiduak(jaurdunaldiZenbakia);
+            }
+        } else if (source == gordeEmaitza) {
+        	// 3 partiduak kargatuta daudela ziurtatu
+            if (partiduGordeak.size() < 3) return;
+
+            // Kutxak array batean sartu begizta batekin irakurtzeko
+            JTextField[] txtLokalak = {txtPuntuakLokala1, txtPuntuakLokala2, txtPuntuakLokala3};
+            JTextField[] txtBisitariak = {txtPuntuakBisitaria1, txtPuntuakBisitaria2, txtPuntuakBisitaria3};
+
+            for (int i = 0; i < 3; i++) {
+                Partidua p = partiduGordeak.get(i);
+                String txtLok = txtLokalak[i].getText().trim();
+                String txtBis = txtBisitariak[i].getText().trim();
+
+                // Balidazioa egiteko metodoa deitu, eta errore mezua jaso
+                String erroreMezua = Metodoak.balioztatuEmaitzak(txtLok, txtBis);
+
+                // Errorerik badago, mezua erakutsi eta gorde prozesua moztu
+                if (erroreMezua != null) {
+                    JOptionPane.showMessageDialog(this, "Errorea (" + p.getTaldeLokala() + " vs " + p.getTaldeBisitari() + "): \n" + erroreMezua, "Balidazio Errorea", JOptionPane.ERROR_MESSAGE);
+                    return; 
+                }
+
+                // Gorde prozesua: txt-ak Integer bihurtu, eta DAO metodoa deitu
+                
+                Integer golesLocal = txtLok.isEmpty() ? null : Integer.parseInt(txtLok);
+                Integer golesVisitante = txtBis.isEmpty() ? null : Integer.parseInt(txtBis);
+                
+                partiduaDAO.eguneratuEmaitza(p.getIdPar(), golesLocal, golesVisitante);
+            }
+
+            // Begizta osorik eta errorerik gabe amaitu bada:
+            JOptionPane.showMessageDialog(this, "Emaitzak ondo gorde dira datu-basean!", "Eguneratua", JOptionPane.INFORMATION_MESSAGE);
             
         } else if (source == comboIzquierda) {
             // DAO logika
@@ -417,13 +560,11 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
             // DAO logika
         } else if (source == btnAldatu) {
             // DAO logika
-        } else if (source == gordeEmaitza) {
-            // DAO logika
-        }
+        } 
     }
     
     // ==========================================================
-    // 7. Tauleen eta combobox-aren metodoa
+    // 6. Tauleen eta combobox-aren metodoa
     // ==========================================================
     private void eguneratuTaulak(String aukeratutakoTaldea) {
         modeloPequena.setRowCount(0); 
@@ -445,15 +586,11 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
                     jokalaria.getNAN(),
                     jokalaria.getTaldea(),
                     jokalaria.getPrezioa(),
-                    jokalaria.getJokalarienPuntuak()
+                    
                 });
             }
         }
     }
-
-    
-
-    
 
     // ==========================================================
     // 7. Irteera Metodoa
@@ -463,14 +600,12 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
 
         if (respuesta == JOptionPane.YES_OPTION) {
             System.exit(0);
-        } else if (respuesta == JOptionPane.NO_OPTION) {
-            
         }
     }
+    
     // ==========================================================
     // 8. Panelak erakusteko metodoa
     // ==========================================================
-    
     private void erakutsiPanelak(String baimenak) {
         klasifikazioaIkusi.setVisible(true);
         taldeakjokalariakIkusi.setVisible(true);
@@ -500,7 +635,39 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     }
     
     // ==========================================================
-    // 10. Main (Abiarazlea)
+    // 10. EMAITZAK KUDEATZEKO METODO BERRIA
+    // ==========================================================
+    
+    // MOMENTO 2: ComboBox-a aldatzean, pantailako 3 partiduak kargatu
+    private void kargatuPartiduak(int jaurdunaldiZenbakia) {
+        partiduGordeak = partiduaDAO.lortuJaurdunaldikoPartiduak(jaurdunaldiZenbakia);
+        
+        if (partiduGordeak.size() == 3) {
+            // --- 1. PARTIDUA ---
+            Partidua p1 = partiduGordeak.get(0);
+            lblLokala1.setText(p1.getTaldeLokala());
+            lblBisitaria1.setText(p1.getTaldeBisitari());
+            txtPuntuakLokala1.setText(p1.getResultLokala() != null ? String.valueOf(p1.getResultLokala()) : "");
+            txtPuntuakBisitaria1.setText(p1.getResulBisitari() != null ? String.valueOf(p1.getResulBisitari()) : "");
+
+            // --- 2. PARTIDUA ---
+            Partidua p2 = partiduGordeak.get(1);
+            lblLokala2.setText(p2.getTaldeLokala());
+            lblBisitaria2.setText(p2.getTaldeBisitari());
+            txtPuntuakLokala2.setText(p2.getResultLokala() != null ? String.valueOf(p2.getResultLokala()) : "");
+            txtPuntuakBisitaria2.setText(p2.getResulBisitari() != null ? String.valueOf(p2.getResulBisitari()) : "");
+
+            // --- 3. PARTIDUA ---
+            Partidua p3 = partiduGordeak.get(2);
+            lblLokala3.setText(p3.getTaldeLokala());
+            lblBisitaria3.setText(p3.getTaldeBisitari());
+            txtPuntuakLokala3.setText(p3.getResultLokala() != null ? String.valueOf(p3.getResultLokala()) : "");
+            txtPuntuakBisitaria3.setText(p3.getResulBisitari() != null ? String.valueOf(p3.getResulBisitari()) : "");
+        }
+    }
+
+    // ==========================================================
+    // 11. Main (Abiarazlea)
     // ==========================================================
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> new ErronkaBisuala());

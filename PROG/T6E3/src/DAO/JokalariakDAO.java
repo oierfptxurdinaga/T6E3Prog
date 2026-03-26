@@ -15,6 +15,10 @@ public class JokalariakDAO {
 
 	private ConexionDB conexionDB = new ConexionDB();
 	
+	// --------------------------
+	// Jokalariak lortzeko metodoa
+	// --------------------------
+	
 	public ArrayList<Jokalaria> lortuJokalariak() {
         ArrayList<Jokalaria> listaJokalariak = new ArrayList<>();
         
@@ -36,10 +40,10 @@ public class JokalariakDAO {
                 String NAN = rs.getString("NAN");
                 String Taldea = rs.getString("Talde_Izena");
                 int Prezioa = rs.getInt("Merka_Prezioa"); 
-                int JokalarienPuntuak = 0; 
                 
                 
-                Jokalaria jokalaria = new Jokalaria(Izena, Abizena, JaiotzeData, NAN, Taldea, Prezioa, JokalarienPuntuak);
+                
+                Jokalaria jokalaria = new Jokalaria(Izena, Abizena, JaiotzeData, NAN, Taldea, Prezioa);
                 
                 listaJokalariak.add(jokalaria);
             }

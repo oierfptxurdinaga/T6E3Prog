@@ -8,38 +8,57 @@ import java.time.LocalDate;
  * Partida batek honako informazioa gordetzen du:
  * </p>
  * <ul>
- *   <li>Talde lokala</li>
- *   <li>Talde bisitaria</li>
- *   <li>Talde bakoitzaren emaitza</li>
- *   <li>Partidaren data</li>
- *   <li>Partidaren ordua</li>
+ * <li>Id_Par (Partiduaren ID-a datu-basean, eguneraketak egiteko)</li>
+ * <li>Talde lokala</li>
+ * <li>Talde bisitaria</li>
+ * <li>Talde bakoitzaren emaitza (Integer, null izan daiteke jokatu ez bada)</li>
+ * <li>Partidaren data</li>
+ * <li>Partidaren ordua</li>
  * </ul>
  *
- * <p>
- * Klase hau {@link Jaurdunaldia} klasearekin erlazionatuta dago,
- * jardunaldi bakoitzeko partidak kudeatzeko erabiltzen baita.
- * </p>
- *
  * @author ZureIzena
- * @version 1.0
+ * @version 1.1
  */
 public class Partidua {
+	
+	private int IdPar; 
 	private String TaldeLokala;
 	private String TaldeBisitari;
-	private int ResultLokala;
-	private int ResulBisitari;
+	private Integer ResultLokala; 
+	private Integer ResulBisitari; 
 	private LocalDate Data;
 	private String Ordua;
-	public Partidua(String taldeLokala, String taldeBisitari, int resultLokala, int resulBisitari, LocalDate data,
+	
+	// Hasierako konstruktorea (Datu baseko datak eta orduak erabiltzeko)
+	public Partidua(String taldeLokala, String taldeBisitari, Integer resultLokala, Integer resulBisitari, LocalDate data,
 			String ordua) {
 		super();
-		TaldeLokala = taldeLokala;
-		TaldeBisitari = taldeBisitari;
-		ResultLokala = resultLokala;
-		ResulBisitari = resulBisitari;
-		Data = data;
-		Ordua = ordua;
+		this.TaldeLokala = taldeLokala;
+		this.TaldeBisitari = taldeBisitari;
+		this.ResultLokala = resultLokala;
+		this.ResulBisitari = resulBisitari;
+		this.Data = data;
+		this.Ordua = ordua;
 	}
+	
+	// Konstruktore berria (Pantailarako, DAO-k erabiltzen duena)
+	public Partidua(int idPar, String taldeLok, String taldeBis, Integer resultLok, Integer resultBis) {
+		this.IdPar = idPar; 
+		this.TaldeLokala = taldeLok;
+		this.TaldeBisitari = taldeBis;
+		this.ResultLokala = resultLok; 
+		this.ResulBisitari = resultBis; 
+	}
+
+	// Getters eta Setters ID-arentzat
+	public int getIdPar() {
+		return IdPar;
+	}
+	public void setIdPar(int idPar) {
+		IdPar = idPar;
+	}
+
+	// Gainontzeko Getters eta Setters
 	public String getTaldeLokala() {
 		return TaldeLokala;
 	}
@@ -52,16 +71,16 @@ public class Partidua {
 	public void setTaldeBisitari(String taldeBisitari) {
 		TaldeBisitari = taldeBisitari;
 	}
-	public int getResultLokala() {
+	public Integer getResultLokala() {
 		return ResultLokala;
 	}
-	public void setResultLokala(int resultLokala) {
+	public void setResultLokala(Integer resultLokala) {
 		ResultLokala = resultLokala;
 	}
-	public int getResulBisitari() {
+	public Integer getResulBisitari() {
 		return ResulBisitari;
 	}
-	public void setResulBisitari(int resulBisitari) {
+	public void setResulBisitari(Integer resulBisitari) {
 		ResulBisitari = resulBisitari;
 	}
 	public LocalDate getData() {
