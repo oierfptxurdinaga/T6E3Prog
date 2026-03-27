@@ -57,5 +57,31 @@ public class JokalariakDAO {
         
         return listaJokalariak;
     }
+	
+	public boolean aldatu_jokalriak(String j_NAN, String taldea) {
+        ArrayList<Jokalaria> listaJokalariak = new ArrayList<>();
+        
+        Connection conn = conexionDB.conectar();
+        
+        if (conn == null) return false;
+        
+
+        String sql = "UPDATE jokalariak SET Talde_Izena = ?\r\n"
+        		+ "WHERE NAN = ?;";
+        
+        try {
+        	PreparedStatement pstmt = conn.prepareStatement(sql);
+        	
+        	pstmt.setString(1, taldea);
+        	pstmt.setString(2, j_NAN);
+        	
+        	return true;
+        }catch(Exception e) {
+        	e.printStackTrace();
+        	return false;
+        }finally {
+			conexionDB.desconectar();
+		}
+    }
 }
 
