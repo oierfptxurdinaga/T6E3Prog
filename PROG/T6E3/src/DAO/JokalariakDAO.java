@@ -58,6 +58,9 @@ public class JokalariakDAO {
         return listaJokalariak;
     }
 	
+	// -------------------------------------------------
+	// Jokalariak talde batetik bestera aldatseko metodoa
+	// -------------------------------------------------
 	public boolean aldatu_jokalriak(String j_NAN, String taldea) {
         ArrayList<Jokalaria> listaJokalariak = new ArrayList<>();
         
@@ -74,6 +77,8 @@ public class JokalariakDAO {
         	
         	pstmt.setString(1, taldea);
         	pstmt.setString(2, j_NAN);
+        	
+        	pstmt.executeUpdate();
         	
         	return true;
         }catch(Exception e) {

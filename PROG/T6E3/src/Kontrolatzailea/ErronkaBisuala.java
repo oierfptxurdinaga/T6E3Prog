@@ -71,6 +71,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     private JComboBox<String> comboIzquierda, comboDerecha;
     private JTable tablaIzquierda;
     private DefaultTableModel modeloIzquierda;
+    private DefaultTableModel modeloDerecha;
     private JButton btnAldatu, atzerantzjokalariak, btnAtera;
     
     // DAO-ak instantziatu
@@ -117,7 +118,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         contentPanel.add(TaldeakJokalariakPanela, "Taldeak");
         contentPanel.add(JokalariakPanela, "Jokalariak");
         
-        JLabel lblTaldeBerria = new JLabel("Taldde Berria");
+        JLabel lblTaldeBerria = new JLabel("Talde Berria");
         lblTaldeBerria.setFont(new Font("Tahoma", Font.PLAIN, 18));
         lblTaldeBerria.setBounds(476, 205, 150, 25);
         JokalariakPanela.add(lblTaldeBerria);
@@ -225,16 +226,12 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         comboDerecha.setBounds(476, 240, 254, 40);
         JokalariakPanela.add(comboDerecha);
 
-        String[] columnasJok = {"Izena", "Abizena", "DNI", "Taldea"};
+        String[] columnasJok = {"Izena", "Abizena", "Jaiotse-Data", "NAN"};
         modeloIzquierda = new DefaultTableModel(columnasJok, 0);
         tablaIzquierda = new JTable(modeloIzquierda);
         JScrollPane scrollIzquierda = new JScrollPane(tablaIzquierda);
         scrollIzquierda.setBounds(30, 124, 312, 306);
         JokalariakPanela.add(scrollIzquierda);
-
-        DefaultTableModel modeloDerecha = new DefaultTableModel(columnasJok, 0);
-
-                
         
         btnAldatu = new JButton("Aldatu");
         btnAldatu.setBounds(360, 240, 92, 40);
@@ -273,12 +270,18 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         taldeak = tdao.lortuTaldeak();
         for (Taldea taldea : taldeak) {
             comboBox.addItem(taldea.getIzena());
+            comboIzquierda.addItem(taldea.getIzena());
+            comboDerecha.addItem(taldea.getIzena());
         }
         
         jokalariak = jdao.lortuJokalariak();
 
         if (comboBox.getItemCount() > 0) {
             eguneratuTaulak((String) comboBox.getItemAt(0));
+        }
+        
+        if (comboIzquierda.getItemCount() > 0) {
+            eguneratuTaulaJokalariakAldatu((String) comboIzquierda.getItemAt(0));
         }
         
         atzerantzTaldeak = new JButton("Atzerantz");
@@ -507,7 +510,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
 
         // --- ATZERANTZ / BUELTATU (Guztiak) ---
         } else if (source == atzerantzKlasif || source == atzerantzEmaitza || 
-                   source == atzerantzTaldeak) {
+                   source == atzerantzTaldeak|| source == atzerantzjokalariak) {
             cardLayout.show(contentPanel, "Hasiera");
 
         } else if (source == atzerantz) {
@@ -518,6 +521,11 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
             String taldeaAukeratua = (String) comboBox.getSelectedItem();
             if (taldeaAukeratua != null) {
                 eguneratuTaulak(taldeaAukeratua);
+            }
+        } else if (source == comboIzquierda) {
+            String taldeaAukeratua = (String) comboIzquierda.getSelectedItem();
+            if (taldeaAukeratua != null) {
+            	eguneratuTaulaJokalariakAldatu(taldeaAukeratua);
             }
         } else if (source == cmbJaurdunaldia) {
             if (cmbJaurdunaldia.getSelectedItem() != null) {
@@ -557,13 +565,27 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
 
             // Begizta osorik eta errorerik gabe amaitu bada:
             JOptionPane.showMessageDialog(this, "Emaitzak ondo gorde dira datu-basean!", "Eguneratua", JOptionPane.INFORMATION_MESSAGE);
-            
-        } else if (source == comboIzquierda) {
-            // DAO logika
-        } else if (source == comboDerecha) {
-            // DAO logika
         } else if (source == btnAldatu) {
-            // DAO logika
+        	try {
+        		if(comboIzquierda.getSelectedItem() != (String)comboDerecha.getSelectedItem()) {
+                	jdao.aldatu_jokalriak(jokalariak.get(tablaIzquierda.getSelectedRow()).getNAN(), (String)comboDerecha.getSelectedItem());
+                	
+                	jokalariak.get(tablaIzquierda.getSelectedRow()).setTaldea((String)comboDerecha.getSelectedItem());
+                	
+                	if (comboBox.getItemCount() > 0) {
+                        eguneratuTaulak((String) comboBox.getSelectedItem());
+                    }
+                    
+                    if (comboIzquierda.getItemCount() > 0) {
+                        eguneratuTaulaJokalariakAldatu((String) comboIzquierda.getSelectedItem());
+                    }
+            	} else {
+                    JOptionPane.showMessageDialog(this, "Errorea", "Jokalaria talde berdin horrtan dago", JOptionPane.ERROR_MESSAGE);
+            	}
+        	} catch(Exception er) {
+        		JOptionPane.showMessageDialog(this, "Errorea", "Zerabait Txarto Atera da", JOptionPane.ERROR_MESSAGE);
+        	}
+        	
         } 
     }
     
@@ -587,10 +609,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
                     jokalaria.getIzena(),
                     jokalaria.getAbizena(),
                     jokalaria.getJaiotzeData(),
-                    jokalaria.getNAN(),
-                    jokalaria.getTaldea(),
-                    jokalaria.getPrezioa(),
-                    
+                    jokalaria.getNAN(),                    
                 });
             }
         }
@@ -599,16 +618,9 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     private void eguneratuTaulaJokalariakAldatu(String aukeratutakoTaldea) {
         modeloIzquierda.setRowCount(0);
 
-        for (Taldea taldea : taldeak) {
-            if (taldea.getIzena().equals(aukeratutakoTaldea)) {
-                modeloPequena.addRow(new Object[]{taldea.getSorreraUrtea(), taldea.getLehendakari(), taldea.getN_Bazkideak()});
-                break;
-            }
-        }
-
         for (Jokalaria jokalaria : jokalariak) {
             if (jokalaria.getTaldea().equals(aukeratutakoTaldea)) {
-                modeloGrande.addRow(new Object[]{
+                modeloIzquierda.addRow(new Object[]{
                     jokalaria.getIzena(),
                     jokalaria.getAbizena(),
                     jokalaria.getJaiotzeData(),
