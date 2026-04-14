@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ErronkaBisuala extends JFrame implements ActionListener, WindowListener {
 
@@ -501,6 +502,21 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         // --- HASIERA NAVEGAZIOA ---
         } else if (source == klasifikazioaIkusi) {
             cardLayout.show(contentPanel, "Klasifikazioa");
+
+            ArrayList<Partidua> partidakKlas = partiduaDAO.lortuPartiduGuztiak();
+            ArrayList<Taldea> klasifikasioa = Metodoak.klasifikasioaKalkulatu(partidakKlas);
+            
+            Collections.sort(klasifikasioa);
+            
+            for (Taldea t : klasifikasioa) {
+                    modeloTabla.addRow(new Object[]{
+                    t.getIzena(),
+                    t.getPuntuTotalak(),
+                    t.getIrabazitakoak(),
+                    t.getGaldutakoak(),
+                    t.getPuntuakF(),
+                    t.getPuntuakC()});
+            }
         } else if (source == sartuEmaitza) {
             cardLayout.show(contentPanel, "Emaitzak");
         } else if (source == taldeakjokalariakIkusi) {

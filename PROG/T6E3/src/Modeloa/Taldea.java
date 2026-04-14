@@ -23,7 +23,7 @@ import java.util.Arrays;
  * @author ZureIzena
  * @version 1.0
  */
-public class Taldea implements Serializable {
+public class Taldea implements Serializable, Comparable<Taldea> {
     private static final long serialVersionUID = 1L;
 	
 	private String Izena;
@@ -153,5 +153,35 @@ public class Taldea implements Serializable {
 	    }
 	    texto += "\n";
 	    return texto;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+	    if (this == obj) {
+	        return true;
+	    }
+	    if (obj == null || getClass() != obj.getClass()) {
+	        return false;
+	    }
+	    Taldea other = (Taldea) obj;
+	    if (Izena == null) {
+	        return other.Izena == null;
+	    } else {
+	        return Izena.equals(other.Izena);
+	    }
+	}
+	
+	@Override
+	public int compareTo(Taldea o) {
+	    if (this.PuntuTotalak != o.PuntuTotalak) {
+	        return Integer.compare(o.PuntuTotalak, this.PuntuTotalak);
+	    }
+	    if (this.Irabazitakoak != o.Irabazitakoak) {
+	        return Integer.compare(o.Irabazitakoak, this.Irabazitakoak);
+	    }
+	    if (this.PuntuakF != o.PuntuakF) {
+	        return Integer.compare(o.PuntuakF, this.PuntuakF);
+	    }
+	    return Integer.compare(this.PuntuakC, o.PuntuakC);
 	}
 }

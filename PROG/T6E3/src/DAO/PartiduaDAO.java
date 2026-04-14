@@ -60,7 +60,7 @@ public class PartiduaDAO {
         return listaPartiduak;
     }
 
- // -------------------------------------------------------------------
+    // -------------------------------------------------------------------
     // Partiduaren emaitzak eguneratzeko metodoa (aldatutako errenkadak bueltatzen ditu)
     // -------------------------------------------------------------------
     public int eguneratuEmaitza(int idPar, Integer resultLok, Integer resultBis) {
@@ -100,5 +100,46 @@ public class PartiduaDAO {
         }
 
         return filasModificadas; 
+    }
+    
+    // -------------------------------
+    // Partidu guztien emaitzak lortu
+    // -------------------------------
+    public ArrayList<Partidua> lortuPartiduGuztiak() {
+    	
+        ArrayList<Partidua> listaPartiduak = new ArrayList<>();
+        Connection conn = conexionDB.conectar();
+
+        if (conn == null) return listaPartiduak;
+
+        
+        String sql = "SELECT * FROM partiduak p ";
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                int idPar = rs.getInt("Id_Par");
+                String taldeLok = rs.getString("Talde_Lok");
+                String taldeBis = rs.getString("Talde_Bis");
+                
+                int resLokDB = rs.getInt("Result_Lok");
+                Integer resultLok = rs.wasNull() ? null : resLokDB;
+
+                int resBisDB = rs.getInt("Result_Bis");
+                Integer resultBis = rs.wasNull() ? null : resBisDB;
+
+                Partidua partidua = new Partidua(idPar, taldeLok, taldeBis, resultLok, resultBis);
+                listaPartiduak.add(partidua);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            conexionDB.desconectar();
+        }
+
+        return listaPartiduak;
     }
 }
