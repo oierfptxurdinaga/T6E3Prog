@@ -196,7 +196,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         titleKlasif.setBounds(0, 20, 800, 30);
         titleKlasif.setFont(titleFont);
 
-        String[] zutabeTituluak = {"Taldea", "P. Totalak", "Irabazi", "Galdu", "Aldeko", "Aurkako"};
+        String[] zutabeTituluak = {"Taldea", "P. Totalak", "Irabazi", "Galdu", "Aldeko Golak", "Aurkako Golak"};
         modeloTabla = new DefaultTableModel(zutabeTituluak, 0);
         tablaKlasif = new JTable(modeloTabla);
         JScrollPane scrollTabla = new JScrollPane(tablaKlasif);
