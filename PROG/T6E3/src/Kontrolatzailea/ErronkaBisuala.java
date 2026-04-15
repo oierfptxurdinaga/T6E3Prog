@@ -731,7 +731,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         for (Jokalaria jokalaria : jokalariak) {
             if (jokalaria.getTaldea().equals(aukeratutakoTaldea)) {
                 modeloGrande.addRow(new Object[]{
-                    jokalaria.getIzena(), jokalaria.getAbizena(), jokalaria.getJaiotzeData(), jokalaria.getNAN(),                    
+                    jokalaria.getIzena(), jokalaria.getAbizena(), jokalaria.getJaiotzeData(), jokalaria.getNAN(), jokalaria.getTaldea(), jokalaria.getPrezioa(),                    
                 });
             }
         }
@@ -743,7 +743,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
             if (jokalaria.getTaldea().equals(aukeratutakoTaldea)) {
                 modeloIzquierda.addRow(new Object[]{
                     jokalaria.getIzena(), jokalaria.getAbizena(), jokalaria.getJaiotzeData(),
-                    jokalaria.getNAN(), jokalaria.getTaldea(), jokalaria.getPrezioa(),
+                    jokalaria.getNAN(),
                 });
             }
         }
