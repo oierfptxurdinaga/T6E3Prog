@@ -6,7 +6,6 @@ import javax.swing.table.DefaultTableModel;
 import DAO.ErabiltzaileakDao;
 import DAO.JokalariakDAO;
 import DAO.TaldeakDAO;
-// BERRIA: Inportazio berriak Emaitzak kudeatzeko
 import DAO.JaurdunaldiaDAO;
 import DAO.PartiduaDAO;
 import Modeloa.Partidua;
@@ -26,11 +25,9 @@ import java.util.Collections;
 
 public class ErronkaBisuala extends JFrame implements ActionListener, WindowListener {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	// ==========================================================
+    private static final long serialVersionUID = 1L;
+    
+    // ==========================================================
     // 1. Atributuak (Pribatuak)
     // ==========================================================
     private CardLayout cardLayout;
@@ -38,17 +35,17 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     private Font titleFont;
 
     // --- Panelen Osagaiak ---
-    private JPanel LoginPanela, HasierakoPanela, KlasifikazioaPanela, EmaitzaPanela, TaldeakJokalariakPanela, JokalariakPanela;
+    private JPanel LoginPanela, HasierakoPanela, KlasifikazioaPanela, EmaitzaPanela, TaldeakJokalariakPanela, JokalariakPanela, ErabiltzaileKudeaketaPanela;
     
     // Login
     private JLabel logoaImg1, erabiltzaileak, pasahitza;
     private JTextField textErabiltzaile;
-    private JPasswordField textPasahitza;
+    private JPasswordField textPasahitza; 
     private JButton sartu, atera1;
 
     // Hasiera
     private JLabel logoaImg2;
-    private JButton atzerantz, atera2, klasifikazioaIkusi, sartuEmaitza, taldeakjokalariakIkusi, jokalariakAldatu;
+    private JButton atzerantz, atera2, klasifikazioaIkusi, sartuEmaitza, taldeakjokalariakIkusi, jokalariakAldatu, kudeaketaBotoia;
 
     // Klasifikazioa
     private JButton atzerantzKlasif, ateraKlasif;
@@ -75,20 +72,27 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     private DefaultTableModel modeloDerecha;
     private JButton btnAldatu, atzerantzjokalariak, btnAtera;
     
+    // Erabiltzaileen Kudeaketaren Osagaiak
+    private JTable tablaErabiltzaileak;
+    private DefaultTableModel modeloErabiltzaileak;
+    
+    private JTextField txtIzenKud, txtAbizenKud, txtNanKud, txtErabKud, txtPasahitzKud; 
+    private JComboBox<String> comboMotaKud;
+    private JButton btnGehituKud, btnAldatuKud, btnEzabatuKud, btnAtzerantzKud, btnAteraKud;
+    
     // DAO-ak instantziatu
     private TaldeakDAO tdao = new TaldeakDAO();
     private JokalariakDAO jdao = new JokalariakDAO();
-    
-    
     private JaurdunaldiaDAO jaurdunaldiaDAO = new JaurdunaldiaDAO();
     private PartiduaDAO partiduaDAO = new PartiduaDAO();
+    private ErabiltzaileakDao edao = new ErabiltzaileakDao(); 
     
-    //Partiduak gorde eta kargatzeko zerrenda
     private ArrayList<Partidua> partiduGordeak = new ArrayList<>(); 
-
-    // Taldeak eta Jokalariak zerrendak erabilitzeko
     private ArrayList<Taldea> taldeak;
     private ArrayList<Jokalaria> jokalariak;
+    
+    // Erabiltzaileen zerrenda memorian gordetzeko
+    private ArrayList<ErabiltzaileMota> erabiltzaileenZerrenda = new ArrayList<>();
 
     // ==========================================================
     // 2. Eraikitzailea (Constructor)
@@ -106,10 +110,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         contentPanel = new JPanel(cardLayout);
         setContentPane(contentPanel);
 
-        // 1. Panelak eta osagaiak sortu
         inizializatuPanelak();
-        
-        // 2. Irudiak kargatu JLabelek sortuta daudenean
         konfiguratuOsagaiBisualak();
 
         contentPanel.add(LoginPanela, "Login");
@@ -118,6 +119,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         contentPanel.add(EmaitzaPanela, "Emaitzak");
         contentPanel.add(TaldeakJokalariakPanela, "Taldeak");
         contentPanel.add(JokalariakPanela, "Jokalariak");
+        contentPanel.add(ErabiltzaileKudeaketaPanela, "Kudeaketa");
         
         JLabel lblTaldeBerria = new JLabel("Talde Berria");
         lblTaldeBerria.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -148,7 +150,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         
         pasahitza = new JLabel("Pasahitza:", JLabel.RIGHT);
         pasahitza.setBounds(200, 330, 110, 30);
-        textPasahitza = new JPasswordField();
+        textPasahitza = new JPasswordField(); 
         textPasahitza.setBounds(320, 330, 200, 30);
         
         sartu = new JButton("Sartu");
@@ -186,18 +188,23 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         jokalariakAldatu = new JButton("Jokalariak Aldatu"); 
         jokalariakAldatu.setBounds(450, 420, 200, 40);
 
+        kudeaketaBotoia = new JButton("Erabiltzaileak Kudeatu");
+        kudeaketaBotoia.setBounds(300, 490, 200, 40);
+        kudeaketaBotoia.setVisible(false);
+
         HasierakoPanela.add(logoaImg2); 
         HasierakoPanela.add(atzerantz); HasierakoPanela.add(atera2);
         HasierakoPanela.add(klasifikazioaIkusi); HasierakoPanela.add(sartuEmaitza);
         HasierakoPanela.add(taldeakjokalariakIkusi); HasierakoPanela.add(jokalariakAldatu);
+        HasierakoPanela.add(kudeaketaBotoia);
 
-        // --- KLASIFIKAZIOA PANELA  ---
+        // --- KLASIFIKAZIOA PANELA ---
         KlasifikazioaPanela = new JPanel(null);
         JLabel titleKlasif = new JLabel("LIGAKO KLASIFIKAZIOA", JLabel.CENTER);
         titleKlasif.setBounds(0, 20, 800, 30);
         titleKlasif.setFont(titleFont);
 
-        String[] zutabeTituluak = {"Taldea", "P. Totalak", "Irabazi", "Galdu", "Aldeko Golak", "Aurkako Golak"};
+        String[] zutabeTituluak = {"Posisioa", "Taldea", "P. Totalak", "Irabazi", "Galdu", "Aldeko Golak", "Aurkako Golak"};
         modeloTabla = new DefaultTableModel(zutabeTituluak, 0);
         tablaKlasif = new JTable(modeloTabla);
         JScrollPane scrollTabla = new JScrollPane(tablaKlasif);
@@ -308,7 +315,6 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         cmbJaurdunaldia = new JComboBox<>();
         cmbJaurdunaldia.setBounds(400, 80, 150, 25);
         
-        // Jaurdunaldiak zuzenean inizializazioan kargatzen ditugu 
         ArrayList<Integer> zenbakiak = jaurdunaldiaDAO.lortuJaurdunaldienZenbakiak();
         for (Integer zenbakia : zenbakiak) {
             cmbJaurdunaldia.addItem(zenbakia + ". Jaurdunaldia");
@@ -316,7 +322,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         
         EmaitzaPanela.add(cmbJaurdunaldia);
 
-        // --- 1. PARTIDUA ---
+        // 1. PARTIDUA
         JPanel partidua1Panela = new JPanel(null);
         partidua1Panela.setBounds(100, 150, 600, 50);
         EmaitzaPanela.add(partidua1Panela);
@@ -341,7 +347,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         lblBisitaria1.setBounds(400, 10, 200, 30);
         partidua1Panela.add(lblBisitaria1);
 
-        // --- 2. PARTIDUA ---
+        // 2. PARTIDUA
         JPanel partidua2Panela = new JPanel(null);
         partidua2Panela.setBounds(100, 220, 600, 50);
         EmaitzaPanela.add(partidua2Panela);
@@ -366,7 +372,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         lblBisitaria2.setBounds(400, 10, 200, 30);
         partidua2Panela.add(lblBisitaria2);
 
-        // --- 3. PARTIDUA ---
+        // 3. PARTIDUA
         JPanel partidua3Panela = new JPanel(null);
         partidua3Panela.setBounds(100, 290, 600, 50);
         EmaitzaPanela.add(partidua3Panela);
@@ -391,7 +397,6 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         lblBisitaria3.setBounds(400, 10, 200, 30);
         partidua3Panela.add(lblBisitaria3);
 
-        // --- BOTOIAK ---
         atzerantzEmaitza = new JButton("Atzerantz"); 
         atzerantzEmaitza.setBounds(50, 470, 100, 30);
 
@@ -405,50 +410,117 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         EmaitzaPanela.add(gordeEmaitza);
         EmaitzaPanela.add(ateraEmaitza);
 
-        // BERRIA: Badaezpada, lehenengo jaurdunaldia kargatzen dugu irekitzean
         if (cmbJaurdunaldia.getItemCount() > 0) {
             String aukera = (String) cmbJaurdunaldia.getItemAt(0);
             int jaurdunaldiZenbakia = Integer.parseInt(aukera.split("\\.")[0]);
             kargatuPartiduak(jaurdunaldiZenbakia);
         }
 
+        // --- ERABILTZAILEAK KUDEATU PANELA ---
+        ErabiltzaileKudeaketaPanela = new JPanel(null);
+        JLabel titleKudeaketa = new JLabel("ERABILTZAILEEN KUDEAKETA", JLabel.CENTER);
+        titleKudeaketa.setBounds(0, 20, 800, 30);
+        titleKudeaketa.setFont(titleFont);
+        ErabiltzaileKudeaketaPanela.add(titleKudeaketa);
+
+        String[] zutabeErab = {"Izena", "Abizena", "NAN", "Erabiltzailea", "Mota"};
+        modeloErabiltzaileak = new DefaultTableModel(zutabeErab, 0);
+        tablaErabiltzaileak = new JTable(modeloErabiltzaileak);
+        JScrollPane scrollErab = new JScrollPane(tablaErabiltzaileak);
+        scrollErab.setBounds(50, 70, 680, 200);
+        ErabiltzaileKudeaketaPanela.add(scrollErab);
+
+        // BERRIA: Funtzionamendu seguruagoa, hutsuneak ('trim') onartzen ditu
+        tablaErabiltzaileak.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && tablaErabiltzaileak.getSelectedRow() != -1) {
+                int row = tablaErabiltzaileak.getSelectedRow();
+                
+                txtIzenKud.setText((String) modeloErabiltzaileak.getValueAt(row, 0));
+                txtAbizenKud.setText((String) modeloErabiltzaileak.getValueAt(row, 1));
+                txtNanKud.setText((String) modeloErabiltzaileak.getValueAt(row, 2));
+                txtErabKud.setText((String) modeloErabiltzaileak.getValueAt(row, 3));
+                comboMotaKud.setSelectedItem((String) modeloErabiltzaileak.getValueAt(row, 4));
+
+                // BERRIA: Pasahitza garbitu lehenbizi aurreko balioa (adib. 12345) ez geratzeko
+                txtPasahitzKud.setText(""); 
+
+                String nanAukeratua = (String) modeloErabiltzaileak.getValueAt(row, 2);
+                if(nanAukeratua != null) {
+                    nanAukeratua = nanAukeratua.trim();
+                    for (ErabiltzaileMota erab : erabiltzaileenZerrenda) {
+                        if (erab.getNAN() != null && erab.getNAN().trim().equals(nanAukeratua)) {
+                            txtPasahitzKud.setText(erab.getPasahitza());
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+
+        int yForm = 290;
+        ErabiltzaileKudeaketaPanela.add(new JLabel("Izena:")).setBounds(50, yForm, 60, 25);
+        txtIzenKud = new JTextField(); txtIzenKud.setBounds(110, yForm, 100, 25); ErabiltzaileKudeaketaPanela.add(txtIzenKud);
+        
+        ErabiltzaileKudeaketaPanela.add(new JLabel("Abizena:")).setBounds(220, yForm, 60, 25);
+        txtAbizenKud = new JTextField(); txtAbizenKud.setBounds(280, yForm, 100, 25); ErabiltzaileKudeaketaPanela.add(txtAbizenKud);
+        
+        ErabiltzaileKudeaketaPanela.add(new JLabel("NAN:")).setBounds(400, yForm, 40, 25);
+        txtNanKud = new JTextField(); txtNanKud.setBounds(440, yForm, 100, 25); ErabiltzaileKudeaketaPanela.add(txtNanKud);
+
+        yForm += 40;
+        ErabiltzaileKudeaketaPanela.add(new JLabel("Erab:")).setBounds(50, yForm, 60, 25);
+        txtErabKud = new JTextField(); txtErabKud.setBounds(110, yForm, 100, 25); ErabiltzaileKudeaketaPanela.add(txtErabKud);
+        
+        ErabiltzaileKudeaketaPanela.add(new JLabel("Pasahitza:")).setBounds(220, yForm, 70, 25);
+        txtPasahitzKud = new JTextField(); 
+        txtPasahitzKud.setBounds(290, yForm, 100, 25); 
+        ErabiltzaileKudeaketaPanela.add(txtPasahitzKud);
+
+        ErabiltzaileKudeaketaPanela.add(new JLabel("Mota:")).setBounds(410, yForm, 40, 25);
+        comboMotaKud = new JComboBox<>(new String[]{"Admin", "Presidentea", "Arrunta"});
+        comboMotaKud.setBounds(450, yForm, 100, 25);
+        ErabiltzaileKudeaketaPanela.add(comboMotaKud);
+
+        yForm += 50;
+        btnGehituKud = new JButton("Gehitu"); btnGehituKud.setBounds(150, yForm, 100, 30); ErabiltzaileKudeaketaPanela.add(btnGehituKud);
+        btnAldatuKud = new JButton("Aldatu"); btnAldatuKud.setBounds(300, yForm, 100, 30); ErabiltzaileKudeaketaPanela.add(btnAldatuKud);
+        btnEzabatuKud = new JButton("Ezabatu"); btnEzabatuKud.setBounds(450, yForm, 100, 30); ErabiltzaileKudeaketaPanela.add(btnEzabatuKud);
+
+        btnAtzerantzKud = new JButton("Atzerantz"); btnAtzerantzKud.setBounds(50, 470, 100, 30); ErabiltzaileKudeaketaPanela.add(btnAtzerantzKud);
+        btnAteraKud = new JButton("Atera"); btnAteraKud.setBounds(630, 470, 100, 30); ErabiltzaileKudeaketaPanela.add(btnAteraKud);
+
         // ==========================================================
         // --- THE LISTENERS (Botoien eta osagaien ekintzak) ---
         // ==========================================================
-        
-        // Login listeners
         sartu.addActionListener(this);
         atera1.addActionListener(this);
-
-        // Hasiera listeners
         atzerantz.addActionListener(this);
         atera2.addActionListener(this);
         klasifikazioaIkusi.addActionListener(this);
         sartuEmaitza.addActionListener(this);
         taldeakjokalariakIkusi.addActionListener(this);
         jokalariakAldatu.addActionListener(this);
-
-        // Klasifikazioa listeners
         atzerantzKlasif.addActionListener(this);
         ateraKlasif.addActionListener(this);
-
-        // Jokalariak listeners
         comboIzquierda.addActionListener(this);
         comboDerecha.addActionListener(this);
         btnAldatu.addActionListener(this);
         atzerantzjokalariak.addActionListener(this);
         btnAtera.addActionListener(this);
-
-        // Taldeak listeners
         comboBox.addActionListener(this);
         atzerantzTaldeak.addActionListener(this);
         ateraTaldeak.addActionListener(this);
-
-        // Emaitzak listeners
         cmbJaurdunaldia.addActionListener(this); 
         atzerantzEmaitza.addActionListener(this);
         gordeEmaitza.addActionListener(this);
         ateraEmaitza.addActionListener(this);
+        
+        kudeaketaBotoia.addActionListener(this);
+        btnGehituKud.addActionListener(this);
+        btnAldatuKud.addActionListener(this);
+        btnEzabatuKud.addActionListener(this);
+        btnAtzerantzKud.addActionListener(this);
+        btnAteraKud.addActionListener(this);
     }
     
     // ==========================================================
@@ -458,7 +530,6 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     public void windowClosing(WindowEvent e) {
         atera();
     }
-    
     @Override public void windowOpened(WindowEvent e) {}
     @Override public void windowClosed(WindowEvent e) {}
     @Override public void windowIconified(WindowEvent e) {}
@@ -473,10 +544,9 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
 
-        // --- LOGIN ---
         if (source == sartu) {
             String username = textErabiltzaile.getText();
-            String password = new String(textPasahitza.getPassword());
+            String password = new String(textPasahitza.getPassword()); 
             
             if(username.trim().isEmpty() || password.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Mesedez, bete eremu guztiak.", "Errorea", JOptionPane.ERROR_MESSAGE);
@@ -494,28 +564,22 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
                 JOptionPane.showMessageDialog(null, "Erabiltzaile edo Pasahitz okerra", "Errorea", JOptionPane.ERROR_MESSAGE);
             }
             
-        // --- ATERA / IRTEN (Guztiak) ---
         } else if (source == atera1 || source == atera2 || source == ateraKlasif || 
-                   source == btnAtera || source == ateraTaldeak || source == ateraEmaitza) {
+                   source == btnAtera || source == ateraTaldeak || source == ateraEmaitza || source == btnAteraKud) {
             atera();
             
-        // --- HASIERA NAVEGAZIOA ---
         } else if (source == klasifikazioaIkusi) {
             cardLayout.show(contentPanel, "Klasifikazioa");
-
             ArrayList<Partidua> partidakKlas = partiduaDAO.lortuPartiduGuztiak();
             ArrayList<Taldea> klasifikasioa = Metodoak.klasifikasioaKalkulatu(partidakKlas);
-            
+            modeloTabla.setRowCount(0);
             Collections.sort(klasifikasioa);
-            
+            int i = 0;
             for (Taldea t : klasifikasioa) {
+            		i++;
                     modeloTabla.addRow(new Object[]{
-                    t.getIzena(),
-                    t.getPuntuTotalak(),
-                    t.getIrabazitakoak(),
-                    t.getGaldutakoak(),
-                    t.getPuntuakF(),
-                    t.getPuntuakC()});
+                    i, t.getIzena(), t.getPuntuTotalak(), t.getIrabazitakoak(),
+                    t.getGaldutakoak(), t.getPuntuakF(), t.getPuntuakC()});
             }
         } else if (source == sartuEmaitza) {
             cardLayout.show(contentPanel, "Emaitzak");
@@ -523,16 +587,18 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
             cardLayout.show(contentPanel, "Taldeak");
         } else if (source == jokalariakAldatu) {
             cardLayout.show(contentPanel, "Jokalariak");
+            
+        } else if (source == kudeaketaBotoia) {
+            cardLayout.show(contentPanel, "Kudeaketa");
+            eguneratuErabiltzaileTaula();
 
-        // --- ATZERANTZ / BUELTATU (Guztiak) ---
         } else if (source == atzerantzKlasif || source == atzerantzEmaitza || 
-                   source == atzerantzTaldeak|| source == atzerantzjokalariak) {
+                   source == atzerantzTaldeak|| source == atzerantzjokalariak || source == btnAtzerantzKud) {
             cardLayout.show(contentPanel, "Hasiera");
 
         } else if (source == atzerantz) {
             cardLayout.show(contentPanel, "Login");
 
-        // --- BESTELAKO EKINTZAK (COMBOBOX ETA BOTOIAK) ---
         } else if (source == comboBox) {
             String taldeaAukeratua = (String) comboBox.getSelectedItem();
             if (taldeaAukeratua != null) {
@@ -550,10 +616,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
                 kargatuPartiduak(jaurdunaldiZenbakia);
             }
         } else if (source == gordeEmaitza) {
-        	// 3 partiduak kargatuta daudela ziurtatu
             if (partiduGordeak.size() < 3) return;
-
-            // Kutxak array batean sartu begizta batekin irakurtzeko
             JTextField[] txtLokalak = {txtPuntuakLokala1, txtPuntuakLokala2, txtPuntuakLokala3};
             JTextField[] txtBisitariak = {txtPuntuakBisitaria1, txtPuntuakBisitaria2, txtPuntuakBisitaria3};
 
@@ -561,37 +624,25 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
                 Partidua p = partiduGordeak.get(i);
                 String txtLok = txtLokalak[i].getText().trim();
                 String txtBis = txtBisitariak[i].getText().trim();
-
-                // Balidazioa egiteko metodoa deitu, eta errore mezua jaso
                 String erroreMezua = Metodoak.balioztatuEmaitzak(txtLok, txtBis);
-
-                // Errorerik badago, mezua erakutsi eta gorde prozesua moztu
                 if (erroreMezua != null) {
                     JOptionPane.showMessageDialog(this, "Errorea (" + p.getTaldeLokala() + " vs " + p.getTaldeBisitari() + "): \n" + erroreMezua, "Balidazio Errorea", JOptionPane.ERROR_MESSAGE);
                     return; 
                 }
-
-                // Gorde prozesua: txt-ak Integer bihurtu, eta DAO metodoa deitu
-                
                 Integer golesLocal = txtLok.isEmpty() ? null : Integer.parseInt(txtLok);
                 Integer golesVisitante = txtBis.isEmpty() ? null : Integer.parseInt(txtBis);
-                
                 partiduaDAO.eguneratuEmaitza(p.getIdPar(), golesLocal, golesVisitante);
             }
-
-            // Begizta osorik eta errorerik gabe amaitu bada:
             JOptionPane.showMessageDialog(this, "Emaitzak ondo gorde dira datu-basean!", "Eguneratua", JOptionPane.INFORMATION_MESSAGE);
+            
         } else if (source == btnAldatu) {
         	try {
         		if(comboIzquierda.getSelectedItem() != (String)comboDerecha.getSelectedItem()) {
                 	jdao.aldatu_jokalriak(jokalariak.get(tablaIzquierda.getSelectedRow()).getNAN(), (String)comboDerecha.getSelectedItem());
-                	
                 	jokalariak.get(tablaIzquierda.getSelectedRow()).setTaldea((String)comboDerecha.getSelectedItem());
-                	
                 	if (comboBox.getItemCount() > 0) {
                         eguneratuTaulak((String) comboBox.getSelectedItem());
                     }
-                    
                     if (comboIzquierda.getItemCount() > 0) {
                         eguneratuTaulaJokalariakAldatu((String) comboIzquierda.getSelectedItem());
                     }
@@ -602,7 +653,67 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         		JOptionPane.showMessageDialog(this, "Errorea", "Zerabait Txarto Atera da", JOptionPane.ERROR_MESSAGE);
         	}
         	
-        } 
+        // ==========================================================
+        // ERABILTZAILE KUDEAKETA METODOAK (CRUD)
+        // ==========================================================
+        } else if (source == btnGehituKud) {
+            String izena = txtIzenKud.getText();
+            String abizena = txtAbizenKud.getText();
+            String nan = txtNanKud.getText();
+            String erab = txtErabKud.getText();
+            String pas = txtPasahitzKud.getText(); 
+            String mota = (String) comboMotaKud.getSelectedItem();
+
+            if (nan.isEmpty() || izena.isEmpty() || erab.isEmpty() || pas.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Bete datu guztiak mesedez.", "Errorea", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            ErabiltzaileMota berria = null;
+            if (mota.equals("Admin")) {
+                berria = new Modeloa.Administradorea(izena, abizena, nan, erab, pas);
+            } else if (mota.equals("Presidentea")) {
+                berria = new Modeloa.Presidentea(izena, abizena, nan, erab, pas);
+            } else {
+                berria = new Modeloa.ErabiltzaileNormala(izena, abizena, nan, erab, pas);
+            }
+
+            edao.gehituErabiltzailea(berria);
+            eguneratuErabiltzaileTaula();
+            garbituKudeaketaEremuak();
+
+        } else if (source == btnAldatuKud) {
+            int row = tablaErabiltzaileak.getSelectedRow();
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "Aukeratu erabiltzaile bat taulan.", "Errorea", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            String nan = (String) modeloErabiltzaileak.getValueAt(row, 2);
+            String izenBerria = txtIzenKud.getText();
+            String abizenBerria = txtAbizenKud.getText(); 
+            String erabBerria = txtErabKud.getText();     
+            String pasahitzBerria = txtPasahitzKud.getText();
+
+            if (izenBerria.isEmpty() || pasahitzBerria.isEmpty() || abizenBerria.isEmpty() || erabBerria.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ezin dituzu datuak hutsik utzi.", "Errorea", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            edao.aldatuErabiltzailea(nan, izenBerria, abizenBerria, erabBerria, pasahitzBerria);
+            eguneratuErabiltzaileTaula();
+            garbituKudeaketaEremuak();
+
+        } else if (source == btnEzabatuKud) {
+            int row = tablaErabiltzaileak.getSelectedRow();
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "Aukeratu erabiltzaile bat taulan ezabatzeko.", "Errorea", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            String nan = (String) modeloErabiltzaileak.getValueAt(row, 2);
+            edao.ezabatuErabiltzailea(nan);
+            eguneratuErabiltzaileTaula();
+            garbituKudeaketaEremuak();
+        }
     }
     
     // ==========================================================
@@ -611,21 +722,16 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     private void eguneratuTaulak(String aukeratutakoTaldea) {
         modeloPequena.setRowCount(0); 
         modeloGrande.setRowCount(0);
-
         for (Taldea taldea : taldeak) {
             if (taldea.getIzena().equals(aukeratutakoTaldea)) {
                 modeloPequena.addRow(new Object[]{taldea.getSorreraUrtea(), taldea.getLehendakari(), taldea.getN_Bazkideak()});
                 break;
             }
         }
-
         for (Jokalaria jokalaria : jokalariak) {
             if (jokalaria.getTaldea().equals(aukeratutakoTaldea)) {
                 modeloGrande.addRow(new Object[]{
-                    jokalaria.getIzena(),
-                    jokalaria.getAbizena(),
-                    jokalaria.getJaiotzeData(),
-                    jokalaria.getNAN(),                    
+                    jokalaria.getIzena(), jokalaria.getAbizena(), jokalaria.getJaiotzeData(), jokalaria.getNAN(),                    
                 });
             }
         }
@@ -633,20 +739,31 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     
     private void eguneratuTaulaJokalariakAldatu(String aukeratutakoTaldea) {
         modeloIzquierda.setRowCount(0);
-
         for (Jokalaria jokalaria : jokalariak) {
             if (jokalaria.getTaldea().equals(aukeratutakoTaldea)) {
                 modeloIzquierda.addRow(new Object[]{
-                    jokalaria.getIzena(),
-                    jokalaria.getAbizena(),
-                    jokalaria.getJaiotzeData(),
-                    jokalaria.getNAN(),
-                    jokalaria.getTaldea(),
-                    jokalaria.getPrezioa(),
-                    
+                    jokalaria.getIzena(), jokalaria.getAbizena(), jokalaria.getJaiotzeData(),
+                    jokalaria.getNAN(), jokalaria.getTaldea(), jokalaria.getPrezioa(),
                 });
             }
         }
+    }
+
+    private void eguneratuErabiltzaileTaula() {
+        modeloErabiltzaileak.setRowCount(0);
+        erabiltzaileenZerrenda = edao.lortuErabiltzaileakODB(); 
+        
+        for (ErabiltzaileMota e : erabiltzaileenZerrenda) {
+            modeloErabiltzaileak.addRow(new Object[]{
+                e.getIzena(), e.getAbizena(), e.getNAN(), e.getErabiltzailea(), e.baimenak()
+            });
+        }
+    }
+
+    private void garbituKudeaketaEremuak() {
+        txtIzenKud.setText(""); txtAbizenKud.setText(""); txtNanKud.setText("");
+        txtErabKud.setText(""); txtPasahitzKud.setText("");
+        tablaErabiltzaileak.clearSelection(); 
     }
 
     // ==========================================================
@@ -654,7 +771,6 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     // ==========================================================
     public static void atera() {
         int respuesta = JOptionPane.showConfirmDialog(null, "¿Seguru atera nahi duzula?", "Agur", JOptionPane.YES_NO_OPTION);
-
         if (respuesta == JOptionPane.YES_OPTION) {
             System.exit(0);
         }
@@ -668,6 +784,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         taldeakjokalariakIkusi.setVisible(true);
         sartuEmaitza.setVisible(baimenak.equals("Admin"));
         jokalariakAldatu.setVisible(baimenak.equals("Presidentea"));
+        kudeaketaBotoia.setVisible(baimenak.equals("Admin"));
     }
     
     // ==========================================================
@@ -692,29 +809,24 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     }
     
     // ==========================================================
-    // 10. EMAITZAK KUDEATZEKO METODO BERRIA
+    // 10. EMAITZAK KUDEATZEKO METODOA
     // ==========================================================
-    
-    // MOMENTO 2: ComboBox-a aldatzean, pantailako 3 partiduak kargatu
     private void kargatuPartiduak(int jaurdunaldiZenbakia) {
         partiduGordeak = partiduaDAO.lortuJaurdunaldikoPartiduak(jaurdunaldiZenbakia);
         
         if (partiduGordeak.size() == 3) {
-            // --- 1. PARTIDUA ---
             Partidua p1 = partiduGordeak.get(0);
             lblLokala1.setText(p1.getTaldeLokala());
             lblBisitaria1.setText(p1.getTaldeBisitari());
             txtPuntuakLokala1.setText(p1.getResultLokala() != null ? String.valueOf(p1.getResultLokala()) : "");
             txtPuntuakBisitaria1.setText(p1.getResulBisitari() != null ? String.valueOf(p1.getResulBisitari()) : "");
 
-            // --- 2. PARTIDUA ---
             Partidua p2 = partiduGordeak.get(1);
             lblLokala2.setText(p2.getTaldeLokala());
             lblBisitaria2.setText(p2.getTaldeBisitari());
             txtPuntuakLokala2.setText(p2.getResultLokala() != null ? String.valueOf(p2.getResultLokala()) : "");
             txtPuntuakBisitaria2.setText(p2.getResulBisitari() != null ? String.valueOf(p2.getResulBisitari()) : "");
 
-            // --- 3. PARTIDUA ---
             Partidua p3 = partiduGordeak.get(2);
             lblLokala3.setText(p3.getTaldeLokala());
             lblBisitaria3.setText(p3.getTaldeBisitari());

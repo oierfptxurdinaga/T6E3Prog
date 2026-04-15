@@ -76,15 +76,17 @@ import Modeloa.Taldea;
 					klasifikasioa.add(talL);
 				} else {
 					for(Taldea kla : klasifikasioa) {
-							talL.setPuntuakF(kla.getPuntuakF()+p.getResultLokala());
-							talL.setPuntuakC(kla.getPuntuakC()+p.getResulBisitari());
-							if(p.getResulBisitari()>p.getResultLokala()) {
-								talL.setPuntuTotalak(3+kla.getPuntuTotalak());
-								talL.setIrabazitakoak(1+kla.getIrabazitakoak());
-							} else if(p.getResulBisitari()==p.getResultLokala()) {
-								talL.setPuntuTotalak(1+kla.getPuntuTotalak());
-							} else {
-								talL.setGaldutakoak(1+kla.getGaldutakoak());
+							if(kla.equals(talL)) {
+								kla.setPuntuakF(kla.getPuntuakF()+p.getResultLokala());
+								kla.setPuntuakC(kla.getPuntuakC()+p.getResulBisitari());
+								if(p.getResulBisitari()>p.getResultLokala()) {
+									kla.setPuntuTotalak(3+kla.getPuntuTotalak());
+									kla.setIrabazitakoak(1+kla.getIrabazitakoak());
+								} else if(p.getResulBisitari()==p.getResultLokala()) {
+									kla.setPuntuTotalak(1+kla.getPuntuTotalak());
+								} else {
+									kla.setGaldutakoak(1+kla.getGaldutakoak());
+								}
 							}
 					}
 				}
@@ -105,15 +107,17 @@ import Modeloa.Taldea;
 					klasifikasioa.add(talB);
 				} else {
 					for(Taldea kla : klasifikasioa) {
-							talB.setPuntuakF(kla.getPuntuakF()+p.getResulBisitari());
-							talB.setPuntuakC(kla.getPuntuakC()+p.getResultLokala());
-							if(p.getResultLokala()>p.getResulBisitari()) {
-								talB.setPuntuTotalak(3+kla.getPuntuTotalak());
-								talB.setIrabazitakoak(1+kla.getIrabazitakoak());
-							} else if(p.getResulBisitari()==p.getResultLokala()) {
-								talB.setPuntuTotalak(1+kla.getPuntuTotalak());
-							} else {
-								talB.setGaldutakoak(1+kla.getGaldutakoak());
+							if(kla.equals(talB)) {
+								kla.setPuntuakF(kla.getPuntuakF()+p.getResulBisitari());
+								kla.setPuntuakC(kla.getPuntuakC()+p.getResultLokala());
+								if(p.getResultLokala()>p.getResulBisitari()) {
+									kla.setPuntuTotalak(3+kla.getPuntuTotalak());
+									kla.setIrabazitakoak(1+kla.getIrabazitakoak());
+								} else if(p.getResulBisitari()==p.getResultLokala()) {
+									kla.setPuntuTotalak(1+kla.getPuntuTotalak());
+								} else {
+									kla.setGaldutakoak(1+kla.getGaldutakoak());
+								}
 							}
 						}
 				}
