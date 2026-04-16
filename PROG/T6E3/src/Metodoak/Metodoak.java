@@ -9,7 +9,21 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+// XML eta DAO Importak
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import DAO.ErabiltzaileakDao;
+import DAO.PartiduaDAO;
+import DAO.TaldeakDAO;
+import DAO.JokalariakDAO;
 import Modeloa.ErabiltzaileMota;
 import Modeloa.Jokalaria;
 import Modeloa.Partidua;
@@ -20,16 +34,14 @@ public class Metodoak {
     // ErabiltzaileakDao objektua datu-baseko erabiltzaileak kudeatzeko
     public static ErabiltzaileakDao edao = new ErabiltzaileakDao();
     
-    // Erabiltzaileak login metodoa erabiltzailearen autentifikazioa egiteko
+    // Erabiltzaileak login metodoa
     public static String login (String erabiltzailea, String pasahitza) {
         ArrayList<ErabiltzaileMota> erabiltzaileaklist = edao.lortuErabiltzaileakODB();
         
         for (ErabiltzaileMota e : erabiltzaileaklist) {
             if (e.getErabiltzailea().equals(erabiltzailea) && e.getPasahitza().equals(pasahitza)) {
-                
-                // BERRIA: Login zuzena denean, erregistroa idatzi fitxategian
+                // Login zuzena denean, erregistroa idatzi fitxategian
                 idatziLog(e.getIzena() + " " + e.getAbizena(), erabiltzailea, e.baimenak());
-                
                 return e.baimenak();
             }
         }
@@ -40,129 +52,176 @@ public class Metodoak {
     public static void idatziLog(String izenAbizenak, String erabiltzailea, String rola) {
         try {
             File fitxategia = new File("Login_Erregistroa.log");
-            
-            // 'true' parametroak testua fitxategiaren amaieran gehitzen du ezabatu gabe
             FileWriter fw = new FileWriter(fitxategia, true);
             BufferedWriter bw = new BufferedWriter(fw);
             
-            // Data eta ordua lortu eta formateatu
             LocalDateTime orain = LocalDateTime.now();
             DateTimeFormatter formatua = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             String dataFormateatua = orain.format(formatua);
             
-            // Log-aren egitura: [Data] Erabiltzailea | Izena | Rola
             String logMezua = String.format("[%s] Erabiltzailea: %-12s | Izena: %-20s | Rola: %s", 
                                             dataFormateatua, erabiltzailea, izenAbizenak, rola);
             
             bw.write(logMezua);
-            bw.newLine(); // Hurrengo erregistrorako lerro berria
-            
+            bw.newLine();
             bw.close();
             fw.close();
-            
         } catch (IOException e) {
             System.out.println("Errorea log fitxategia idaztean: " + e.getMessage());
+        }
+    }
+
+    // XML fitxategia sortzeko metodoa
+    public static void sortuXMLFitxategia() {
+        try {
+            TaldeakDAO tdao = new TaldeakDAO();
+            JokalariakDAO jdao = new JokalariakDAO();
+            PartiduaDAO pdao = new PartiduaDAO();
+
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.newDocument();
+
+            Element root = doc.createElement("SaskibaloiLiga");
+            doc.appendChild(root);
+
+            // --- TALDEAK ---
+            Element taldeakNode = doc.createElement("Taldeak");
+            root.appendChild(taldeakNode);
+            for (Taldea t : tdao.lortuTaldeak()) {
+                Element taldea = doc.createElement("Taldea");
+                taldea.setAttribute("Izena", t.getIzena());
+                taldea.appendChild(doc.createElement("Lehendakaria")).appendChild(doc.createTextNode(t.getLehendakari()));
+                taldea.appendChild(doc.createElement("Bazkideak")).appendChild(doc.createTextNode(String.valueOf(t.getN_Bazkideak())));
+                taldeakNode.appendChild(taldea);
+            }
+
+            // --- JOKALARIAK ---
+            Element jokalariakNode = doc.createElement("Jokalariak");
+            root.appendChild(jokalariakNode);
+            for (Jokalaria j : jdao.lortuJokalariak()) {
+                Element jokalaria = doc.createElement("Jokalaria");
+                jokalaria.setAttribute("NAN", j.getNAN());
+                jokalaria.appendChild(doc.createElement("Izena")).appendChild(doc.createTextNode(j.getIzena() + " " + j.getAbizena()));
+                jokalaria.appendChild(doc.createElement("Taldea")).appendChild(doc.createTextNode(j.getTaldea()));
+                jokalaria.appendChild(doc.createElement("Prezioa")).appendChild(doc.createTextNode(String.valueOf(j.getPrezioa())));
+                jokalariakNode.appendChild(jokalaria);
+            }
+
+            // --- PARTIDUAK ---
+            Element partiduakNode = doc.createElement("Partiduak");
+            root.appendChild(partiduakNode);
+            for (Partidua p : pdao.lortuPartiduGuztiak()) {
+                Element partidua = doc.createElement("Partidua");
+                partidua.appendChild(doc.createElement("Lokala")).appendChild(doc.createTextNode(p.getTaldeLokala()));
+                partidua.appendChild(doc.createElement("Bisitaria")).appendChild(doc.createTextNode(p.getTaldeBisitari()));
+                String emaitza = (p.getResultLokala() != null ? p.getResultLokala() : "0") + " - " + 
+                                 (p.getResulBisitari() != null ? p.getResulBisitari() : "0");
+                partidua.appendChild(doc.createElement("Emaitza")).appendChild(doc.createTextNode(emaitza));
+                partiduakNode.appendChild(partidua);
+            }
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(new File("LigaDatuak.xml"));
+            transformer.transform(source, result);
+
+        } catch (Exception e) {
+            System.err.println("Errorea XML sortzean: " + e.getMessage());
         }
     }
     
     // Emaitzak balioztatzeko metodoa
     public static String balioztatuEmaitzak(String txtLok, String txtBis) {
-            
-        String mezua = null; // Berez, ez dago errorerik (null)
-
-        // 1. BALIDAZIOA: "Todo o nada"
+        String mezua = null; 
         if ((txtLok.isEmpty() && !txtBis.isEmpty()) || (!txtLok.isEmpty() && txtBis.isEmpty())) {
             mezua = "Bi kutxak hutsik edo biak beteta egon behar dute.";
-        } 
-        // 2. BALIDAZIOA: Zenbakiak izatea (Bakarrik biak beteta badaude sartuko da hona)
-        else if (!txtLok.isEmpty() && !txtBis.isEmpty()) {
+        } else if (!txtLok.isEmpty() && !txtBis.isEmpty()) {
             try {
                 int golesLocal = Integer.parseInt(txtLok);
                 int golesVisitante = Integer.parseInt(txtBis);
-
-                // 3. BALIDAZIOA: Positiboak izatea
                 if (golesLocal < 0 || golesVisitante < 0) {
                     mezua = "Ezin dira gol negatiboak sartu.";
                 }
             } catch (NumberFormatException ex) {
-                mezua = "Zenbakiak soilik onartzen dira (adib: 3).";
+                mezua = "Zenbakiak soilik onartzen dira.";
             }
         }
-        
-        // Amaieran mezu bakarra itzultzen dugu (errorea badago testua, bestela null)
         return mezua; 
     }
 
-    public static ArrayList<Taldea> klasifikasioaKalkulatu(ArrayList<Partidua> partiduakEmaitzekin){
-        
+    // Klasifikazioa kalkulatzeko metodoa
+    public static ArrayList<Taldea> klasifikasioaKalkulatu(ArrayList<Partidua> partiduakEmaitzekin) {
         ArrayList<Taldea> klasifikasioa = new ArrayList<>();
         
         for(Partidua p : partiduakEmaitzekin) {
             if(p.getResulBisitari() != null && p.getResultLokala() != null) {
+                
+                // Bisitari taldea prozesatu
                 Taldea talL = new Taldea(p.getTaldeBisitari(), LocalDate.now(), "", 0);
                 if(!klasifikasioa.contains(talL)) {
                     talL.setPuntuakF(p.getResulBisitari());
                     talL.setPuntuakC(p.getResultLokala());
-                    if(p.getResulBisitari()>p.getResultLokala()) {
+                    if(p.getResulBisitari() > p.getResultLokala()) {
                         talL.setPuntuTotalak(3);
                         talL.setIrabazitakoak(1);
-                    } else if(p.getResulBisitari()==p.getResultLokala()) {
+                    } else if(p.getResulBisitari() == p.getResultLokala()) {
                         talL.setPuntuTotalak(1);
                     } else {
                         talL.setGaldutakoak(1);
                     }
-                                    
                     klasifikasioa.add(talL);
                 } else {
                     for(Taldea kla : klasifikasioa) {
-                            if(kla.equals(talL)) {
-                                kla.setPuntuakF(kla.getPuntuakF()+p.getResultLokala());
-                                kla.setPuntuakC(kla.getPuntuakC()+p.getResulBisitari());
-                                if(p.getResulBisitari()>p.getResultLokala()) {
-                                    kla.setPuntuTotalak(3+kla.getPuntuTotalak());
-                                    kla.setIrabazitakoak(1+kla.getIrabazitakoak());
-                                } else if(p.getResulBisitari()==p.getResultLokala()) {
-                                    kla.setPuntuTotalak(1+kla.getPuntuTotalak());
-                                } else {
-                                    kla.setGaldutakoak(1+kla.getGaldutakoak());
-                                }
+                        if(kla.equals(talL)) {
+                            kla.setPuntuakF(kla.getPuntuakF() + p.getResulBisitari());
+                            kla.setPuntuakC(kla.getPuntuakC() + p.getResultLokala());
+                            if(p.getResulBisitari() > p.getResultLokala()) {
+                                kla.setPuntuTotalak(3 + kla.getPuntuTotalak());
+                                kla.setIrabazitakoak(1 + kla.getIrabazitakoak());
+                            } else if(p.getResulBisitari() == p.getResultLokala()) {
+                                kla.setPuntuTotalak(1 + kla.getPuntuTotalak());
+                            } else {
+                                kla.setGaldutakoak(1 + kla.getGaldutakoak());
                             }
+                        }
                     }
                 }
                 
+                // Lokal taldea prozesatu
                 Taldea talB = new Taldea(p.getTaldeLokala(), LocalDate.now(), "", 0);
                 if(!klasifikasioa.contains(talB)) {
                     talB.setPuntuakF(p.getResultLokala());
                     talB.setPuntuakC(p.getResulBisitari());
-                    if(p.getResultLokala()>p.getResulBisitari()) {
+                    if(p.getResultLokala() > p.getResulBisitari()) {
                         talB.setPuntuTotalak(3);
                         talB.setIrabazitakoak(1);
-                    } else if(p.getResulBisitari()==p.getResultLokala()) {
+                    } else if(p.getResulBisitari() == p.getResultLokala()) {
                         talB.setPuntuTotalak(1);
                     } else {
                         talB.setGaldutakoak(1);
                     }
-                                    
                     klasifikasioa.add(talB);
                 } else {
                     for(Taldea kla : klasifikasioa) {
-                            if(kla.equals(talB)) {
-                                kla.setPuntuakF(kla.getPuntuakF()+p.getResulBisitari());
-                                kla.setPuntuakC(kla.getPuntuakC()+p.getResultLokala());
-                                if(p.getResultLokala()>p.getResulBisitari()) {
-                                    kla.setPuntuTotalak(3+kla.getPuntuTotalak());
-                                    kla.setIrabazitakoak(1+kla.getIrabazitakoak());
-                                } else if(p.getResulBisitari()==p.getResultLokala()) {
-                                    kla.setPuntuTotalak(1+kla.getPuntuTotalak());
-                                } else {
-                                    kla.setGaldutakoak(1+kla.getGaldutakoak());
-                                }
+                        if(kla.equals(talB)) {
+                            kla.setPuntuakF(kla.getPuntuakF() + p.getResultLokala());
+                            kla.setPuntuakC(kla.getPuntuakC() + p.getResulBisitari());
+                            if(p.getResultLokala() > p.getResulBisitari()) {
+                                kla.setPuntuTotalak(3 + kla.getPuntuTotalak());
+                                kla.setIrabazitakoak(1 + kla.getIrabazitakoak());
+                            } else if(p.getResulBisitari() == p.getResultLokala()) {
+                                kla.setPuntuTotalak(1 + kla.getPuntuTotalak());
+                            } else {
+                                kla.setGaldutakoak(1 + kla.getGaldutakoak());
                             }
                         }
+                    }
                 }
             }
         }
-        
         return klasifikasioa;
     }
 }

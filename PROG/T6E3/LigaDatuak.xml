@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<SaskibaloiLiga>
+    <Taldeak>
+        <Taldea Izena="Barca FS">
+            <Lehendakaria>Joan</Lehendakaria>
+            <Bazkideak>4500</Bazkideak>
+        </Taldea>
+        <Taldea Izena="ElPozo Murcia">
+            <Lehendakaria>Jose Ant.</Lehendakaria>
+            <Bazkideak>3200</Bazkideak>
+        </Taldea>
+        <Taldea Izena="Inter Movistar">
+            <Lehendakaria>Jose Mari</Lehendakaria>
+            <Bazkideak>4000</Bazkideak>
+        </Taldea>
+        <Taldea Izena="Osasuna Magna">
+            <Lehendakaria>Tatono</Lehendakaria>
+            <Bazkideak>2500</Bazkideak>
+        </Taldea>
+        <Taldea Izena="Palma Futsal">
+            <Lehendakaria>Miquel</Lehendakaria>
+            <Bazkideak>2800</Bazkideak>
+        </Taldea>
+        <Taldea Izena="Ribera Navarra">
+            <Lehendakaria>Alberto</Lehendakaria>
+            <Bazkideak>1500</Bazkideak>
+        </Taldea>
+    </Taldeak>
+    <Jokalariak>
+        <Jokalaria NAN="01234567J">
+            <Izena>Asier Llamas</Izena>
+            <Taldea>Osasuna Magna</Taldea>
+            <Prezioa>200000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="10000001A">
+            <Izena>Miquel Feixas</Izena>
+            <Taldea>Barca FS</Taldea>
+            <Prezioa>150000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="10000002B">
+            <Izena>Antonio Perez</Izena>
+            <Taldea>Barca FS</Taldea>
+            <Prezioa>250000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="10000003C">
+            <Izena>Andre Coelho</Izena>
+            <Taldea>Barca FS</Taldea>
+            <Prezioa>300000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="10000004D">
+            <Izena>Erick Mendonca</Izena>
+            <Taldea>Barca FS</Taldea>
+            <Prezioa>350000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="10000005E">
+            <Izena>Adolfo Fernandez</Izena>
+            <Taldea>Barca FS</Taldea>
+            <Prezioa>400000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="10000006F">
+            <Izena>Dyego Zuffo</Izena>
+            <Taldea>Barca FS</Taldea>
+            <Prezioa>450000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="10000007G">
+            <Izena>Matheus Rodrigues</Izena>
+            <Taldea>Barca FS</Taldea>
+            <Prezioa>380000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="10000008H">
+            <Izena>Juanjo Catela</Izena>
+            <Taldea>Barca FS</Taldea>
+            <Prezioa>320000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="10000009I">
+            <Izena>Jean Pierre Pito</Izena>
+            <Taldea>Barca FS</Taldea>
+            <Prezioa>600000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="10000010J">
+            <Izena>Carlos V. Ferrao</Izena>
+            <Taldea>Barca FS</Taldea>
+            <Prezioa>550000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="11223344K">
+            <Izena>Terry Prestes</Izena>
+            <Taldea>Ribera Navarra</Taldea>
+            <Prezioa>320000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="12345678A">
+            <Izena>Sergio Lozano</Izena>
+            <Taldea>Barca FS</Taldea>
+            <Prezioa>500000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="20000001A">
+            <Izena>Edu Sousa</Izena>
+            <Taldea>ElPozo Murcia</Taldea>
+            <Prezioa>180000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="20000002B">
+            <Izena>Marlon Araujo</Izena>
+            <Taldea>ElPozo Murcia</Taldea>
+            <Prezioa>250000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="20000003C">
+            <Izena>Felipe Valerio</Izena>
+            <Taldea>ElPozo Murcia</Taldea>
+            <Prezioa>280000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="20000004D">
+            <Izena>Ricardo Mayor</Izena>
+            <Taldea>ElPozo Murcia</Taldea>
+            <Prezioa>150000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="20000005E">
+            <Izena>Fabricio Gadeia</Izena>
+            <Taldea>ElPozo Murcia</Taldea>
+            <Prezioa>420000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="20000006F">
+            <Izena>Artem Niyazov</Izena>
+            <Taldea>ElPozo Murcia</Taldea>
+            <Prezioa>350000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="20000007G">
+            <Izena>Taynan Da Silva</Izena>
+            <Taldea>ElPozo Murcia</Taldea>
+            <Prezioa>400000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="20000008H">
+            <Izena>David Alvarez</Izena>
+            <Taldea>ElPozo Murcia</Taldea>
+            <Prezioa>200000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="20000009I">
+            <Izena>Rafa Santos</Izena>
+            <Taldea>ElPozo Murcia</Taldea>
+            <Prezioa>380000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="20000010J">
+            <Izena>Bruno Taffy</Izena>
+            <Taldea>ElPozo Murcia</Taldea>
+            <Prezioa>300000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="22334455L">
+            <Izena>Adrian Pereira</Izena>
+            <Taldea>Ribera Navarra</Taldea>
+            <Prezioa>120000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="23456789B">
+            <Izena>Didac Plana</Izena>
+            <Taldea>Barca FS</Taldea>
+            <Prezioa>300000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="30000001A">
+            <Izena>Jesus Garcia</Izena>
+            <Taldea>Inter Movistar</Taldea>
+            <Prezioa>120000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="30000002B">
+            <Izena>Jose Raya</Izena>
+            <Taldea>Inter Movistar</Taldea>
+            <Prezioa>220000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="30000003C">
+            <Izena>Tomaz Braga</Izena>
+            <Taldea>Inter Movistar</Taldea>
+            <Prezioa>250000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="30000004D">
+            <Izena>Sepe Gomez</Izena>
+            <Taldea>Inter Movistar</Taldea>
+            <Prezioa>180000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="30000005E">
+            <Izena>Cecilio Morales</Izena>
+            <Taldea>Inter Movistar</Taldea>
+            <Prezioa>320000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="30000006F">
+            <Izena>Rubi Lemos</Izena>
+            <Taldea>Inter Movistar</Taldea>
+            <Prezioa>250000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="30000007G">
+            <Izena>Tomas Drahovsky</Izena>
+            <Taldea>Inter Movistar</Taldea>
+            <Prezioa>450000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="30000008H">
+            <Izena>Jovan Lazarevic</Izena>
+            <Taldea>Inter Movistar</Taldea>
+            <Prezioa>280000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="30000009I">
+            <Izena>Kaito Yamada</Izena>
+            <Taldea>Inter Movistar</Taldea>
+            <Prezioa>150000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="30000010J">
+            <Izena>Rafael Fits</Izena>
+            <Taldea>Inter Movistar</Taldea>
+            <Prezioa>380000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="34567890C">
+            <Izena>Marcel Marques</Izena>
+            <Taldea>ElPozo Murcia</Taldea>
+            <Prezioa>450000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="40000001A">
+            <Izena>Luan Muller</Izena>
+            <Taldea>Palma Futsal</Taldea>
+            <Prezioa>280000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="40000002B">
+            <Izena>Rómulo Alves</Izena>
+            <Taldea>Palma Futsal</Taldea>
+            <Prezioa>180000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="40000003C">
+            <Izena>Vilian Lourenco</Izena>
+            <Taldea>Palma Futsal</Taldea>
+            <Prezioa>200000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="40000004D">
+            <Izena>Marcelo Chaguinha</Izena>
+            <Taldea>Palma Futsal</Taldea>
+            <Prezioa>300000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="40000005E">
+            <Izena>Moslem Oladghobad</Izena>
+            <Taldea>Palma Futsal</Taldea>
+            <Prezioa>400000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="40000006F">
+            <Izena>Cleber Souza</Izena>
+            <Taldea>Palma Futsal</Taldea>
+            <Prezioa>420000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="40000007G">
+            <Izena>Salar Aghapour</Izena>
+            <Taldea>Palma Futsal</Taldea>
+            <Prezioa>250000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="40000008H">
+            <Izena>Fabinho Gomes</Izena>
+            <Taldea>Palma Futsal</Taldea>
+            <Prezioa>150000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="40000009I">
+            <Izena>Hossein Tayebi</Izena>
+            <Taldea>Palma Futsal</Taldea>
+            <Prezioa>450000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="40000010J">
+            <Izena>Bruno Gomes</Izena>
+            <Taldea>Palma Futsal</Taldea>
+            <Prezioa>350000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="45678901D">
+            <Izena>Juanjo Angosto</Izena>
+            <Taldea>ElPozo Murcia</Taldea>
+            <Prezioa>200000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="50000001A">
+            <Izena>Alejandro Palazon</Izena>
+            <Taldea>Osasuna Magna</Taldea>
+            <Prezioa>100000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="50000002B">
+            <Izena>Jhonatan Linhares</Izena>
+            <Taldea>Osasuna Magna</Taldea>
+            <Prezioa>160000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="50000003C">
+            <Izena>Igor Korsun</Izena>
+            <Taldea>Osasuna Magna</Taldea>
+            <Prezioa>190000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="50000004D">
+            <Izena>Toni Escribano</Izena>
+            <Taldea>Osasuna Magna</Taldea>
+            <Prezioa>90000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="50000005E">
+            <Izena>Dani Zurdo</Izena>
+            <Taldea>Osasuna Magna</Taldea>
+            <Prezioa>140000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="50000006F">
+            <Izena>Andres Geraghty</Izena>
+            <Taldea>Osasuna Magna</Taldea>
+            <Prezioa>150000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="50000007G">
+            <Izena>Juninho Silva</Izena>
+            <Taldea>Osasuna Magna</Taldea>
+            <Prezioa>180000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="50000008H">
+            <Izena>Carlos Vallejo</Izena>
+            <Taldea>Osasuna Magna</Taldea>
+            <Prezioa>110000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="50000009I">
+            <Izena>Leo Cafe</Izena>
+            <Taldea>Osasuna Magna</Taldea>
+            <Prezioa>220000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="50000010J">
+            <Izena>Dani Saldise</Izena>
+            <Taldea>Osasuna Magna</Taldea>
+            <Prezioa>300000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="56789012E">
+            <Izena>Jesus Herrero</Izena>
+            <Taldea>Inter Movistar</Taldea>
+            <Prezioa>250000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="60000001A">
+            <Izena>Raul Jimenez</Izena>
+            <Taldea>Ribera Navarra</Taldea>
+            <Prezioa>80000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="60000002B">
+            <Izena>David Garcia</Izena>
+            <Taldea>Ribera Navarra</Taldea>
+            <Prezioa>150000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="60000003C">
+            <Izena>Dani Fernandez</Izena>
+            <Taldea>Ribera Navarra</Taldea>
+            <Prezioa>110000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="60000004D">
+            <Izena>Pedro Espin</Izena>
+            <Taldea>Ribera Navarra</Taldea>
+            <Prezioa>70000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="60000005E">
+            <Izena>Carlos Bartolome</Izena>
+            <Taldea>Ribera Navarra</Taldea>
+            <Prezioa>140000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="60000006F">
+            <Izena>Anas El Ayyane</Izena>
+            <Taldea>Ribera Navarra</Taldea>
+            <Prezioa>200000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="60000007G">
+            <Izena>Nacho Gomez</Izena>
+            <Taldea>Ribera Navarra</Taldea>
+            <Prezioa>130000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="60000008H">
+            <Izena>Lucas Tripodi</Izena>
+            <Taldea>Ribera Navarra</Taldea>
+            <Prezioa>250000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="60000009I">
+            <Izena>Uge Hernandez</Izena>
+            <Taldea>Ribera Navarra</Taldea>
+            <Prezioa>180000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="60000010J">
+            <Izena>Gabriel Vasquez</Izena>
+            <Taldea>Ribera Navarra</Taldea>
+            <Prezioa>210000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="67890123F">
+            <Izena>Raul Gomez</Izena>
+            <Taldea>Inter Movistar</Taldea>
+            <Prezioa>400000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="78901234G">
+            <Izena>Mario Rivillos</Izena>
+            <Taldea>Palma Futsal</Taldea>
+            <Prezioa>350000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="89012345H">
+            <Izena>Carlos Barron</Izena>
+            <Taldea>Palma Futsal</Taldea>
+            <Prezioa>150000</Prezioa>
+        </Jokalaria>
+        <Jokalaria NAN="90123456I">
+            <Izena>Roberto Martil</Izena>
+            <Taldea>Osasuna Magna</Taldea>
+            <Prezioa>180000</Prezioa>
+        </Jokalaria>
+    </Jokalariak>
+    <Partiduak>
+        <Partidua>
+            <Lokala>Barca FS</Lokala>
+            <Bisitaria>ElPozo Murcia</Bisitaria>
+            <Emaitza>4 - 2</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Inter Movistar</Lokala>
+            <Bisitaria>Palma Futsal</Bisitaria>
+            <Emaitza>3 - 3</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Osasuna Magna</Lokala>
+            <Bisitaria>Ribera Navarra</Bisitaria>
+            <Emaitza>2 - 1</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Ribera Navarra</Lokala>
+            <Bisitaria>Barca FS</Bisitaria>
+            <Emaitza>1 - 3</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>ElPozo Murcia</Lokala>
+            <Bisitaria>Inter Movistar</Bisitaria>
+            <Emaitza>2 - 2</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Palma Futsal</Lokala>
+            <Bisitaria>Osasuna Magna</Bisitaria>
+            <Emaitza>4 - 1</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Barca FS</Lokala>
+            <Bisitaria>Inter Movistar</Bisitaria>
+            <Emaitza>2 - 4</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Palma Futsal</Lokala>
+            <Bisitaria>Ribera Navarra</Bisitaria>
+            <Emaitza>2 - 1</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Osasuna Magna</Lokala>
+            <Bisitaria>ElPozo Murcia</Bisitaria>
+            <Emaitza>1 - 5</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Palma Futsal</Lokala>
+            <Bisitaria>Barca FS</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Inter Movistar</Lokala>
+            <Bisitaria>Osasuna Magna</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Ribera Navarra</Lokala>
+            <Bisitaria>ElPozo Murcia</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Barca FS</Lokala>
+            <Bisitaria>Osasuna Magna</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>ElPozo Murcia</Lokala>
+            <Bisitaria>Palma Futsal</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Ribera Navarra</Lokala>
+            <Bisitaria>Inter Movistar</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>ElPozo Murcia</Lokala>
+            <Bisitaria>Barca FS</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Palma Futsal</Lokala>
+            <Bisitaria>Inter Movistar</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Ribera Navarra</Lokala>
+            <Bisitaria>Osasuna Magna</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Barca FS</Lokala>
+            <Bisitaria>Ribera Navarra</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Inter Movistar</Lokala>
+            <Bisitaria>ElPozo Murcia</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Osasuna Magna</Lokala>
+            <Bisitaria>Palma Futsal</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Inter Movistar</Lokala>
+            <Bisitaria>Barca FS</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Ribera Navarra</Lokala>
+            <Bisitaria>Palma Futsal</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>ElPozo Murcia</Lokala>
+            <Bisitaria>Osasuna Magna</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Barca FS</Lokala>
+            <Bisitaria>Palma Futsal</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Osasuna Magna</Lokala>
+            <Bisitaria>Inter Movistar</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>ElPozo Murcia</Lokala>
+            <Bisitaria>Ribera Navarra</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Osasuna Magna</Lokala>
+            <Bisitaria>Barca FS</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Palma Futsal</Lokala>
+            <Bisitaria>ElPozo Murcia</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+        <Partidua>
+            <Lokala>Inter Movistar</Lokala>
+            <Bisitaria>Ribera Navarra</Bisitaria>
+            <Emaitza>0 - 0</Emaitza>
+        </Partidua>
+    </Partiduak>
+</SaskibaloiLiga>

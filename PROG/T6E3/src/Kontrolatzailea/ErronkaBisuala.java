@@ -46,6 +46,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     // Hasiera
     private JLabel logoaImg2;
     private JButton atzerantz, atera2, klasifikazioaIkusi, sartuEmaitza, taldeakjokalariakIkusi, jokalariakAldatu, kudeaketaBotoia;
+    private JButton btnXML; // BERRIA: XML botoia
 
     // Klasifikazioa
     private JButton atzerantzKlasif, ateraKlasif;
@@ -192,11 +193,17 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         kudeaketaBotoia.setBounds(300, 490, 200, 40);
         kudeaketaBotoia.setVisible(false);
 
+        // BERRIA: XML botoia presidentearentzat Hasiera panelean
+        btnXML = new JButton("Exportar XML");
+        btnXML.setBounds(300, 490, 200, 40); // Adminen botoiaren posizio berdinean
+        btnXML.setVisible(false); // Defektuz ezkutuan
+
         HasierakoPanela.add(logoaImg2); 
         HasierakoPanela.add(atzerantz); HasierakoPanela.add(atera2);
         HasierakoPanela.add(klasifikazioaIkusi); HasierakoPanela.add(sartuEmaitza);
         HasierakoPanela.add(taldeakjokalariakIkusi); HasierakoPanela.add(jokalariakAldatu);
         HasierakoPanela.add(kudeaketaBotoia);
+        HasierakoPanela.add(btnXML); // XML botoia gehituta
 
         // --- KLASIFIKAZIOA PANELA ---
         KlasifikazioaPanela = new JPanel(null);
@@ -430,7 +437,6 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         scrollErab.setBounds(50, 70, 680, 200);
         ErabiltzaileKudeaketaPanela.add(scrollErab);
 
-        // BERRIA: Funtzionamendu seguruagoa, hutsuneak ('trim') onartzen ditu
         tablaErabiltzaileak.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && tablaErabiltzaileak.getSelectedRow() != -1) {
                 int row = tablaErabiltzaileak.getSelectedRow();
@@ -441,7 +447,6 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
                 txtErabKud.setText((String) modeloErabiltzaileak.getValueAt(row, 3));
                 comboMotaKud.setSelectedItem((String) modeloErabiltzaileak.getValueAt(row, 4));
 
-                // BERRIA: Pasahitza garbitu lehenbizi aurreko balioa (adib. 12345) ez geratzeko
                 txtPasahitzKud.setText(""); 
 
                 String nanAukeratua = (String) modeloErabiltzaileak.getValueAt(row, 2);
@@ -521,6 +526,8 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         btnEzabatuKud.addActionListener(this);
         btnAtzerantzKud.addActionListener(this);
         btnAteraKud.addActionListener(this);
+        
+        btnXML.addActionListener(this); // BERRIA: XML botoiaren listener-a
     }
     
     // ==========================================================
@@ -592,6 +599,11 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
             cardLayout.show(contentPanel, "Kudeaketa");
             eguneratuErabiltzaileTaula();
 
+        // BERRIA: XML botoiaren ekintza
+        } else if (source == btnXML) {
+            Metodoak.sortuXMLFitxategia();
+            JOptionPane.showMessageDialog(this, "XML fitxategia ondo sortu da 'LigaDatuak.xml' izenarekin!");
+
         } else if (source == atzerantzKlasif || source == atzerantzEmaitza || 
                    source == atzerantzTaldeak|| source == atzerantzjokalariak || source == btnAtzerantzKud) {
             cardLayout.show(contentPanel, "Hasiera");
@@ -654,7 +666,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         	}
         	
         // ==========================================================
-        // ERABILTZAILE KUDEAKETA METODOAK (CRUD)
+        // ERABILTZAILE KUDEAKETA METODOAK
         // ==========================================================
         } else if (source == btnGehituKud) {
             String izena = txtIzenKud.getText();
@@ -731,7 +743,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         for (Jokalaria jokalaria : jokalariak) {
             if (jokalaria.getTaldea().equals(aukeratutakoTaldea)) {
                 modeloGrande.addRow(new Object[]{
-                    jokalaria.getIzena(), jokalaria.getAbizena(), jokalaria.getJaiotzeData(), jokalaria.getNAN(), jokalaria.getTaldea(), jokalaria.getPrezioa(),                    
+                    jokalaria.getIzena(), jokalaria.getAbizena(), jokalaria.getJaiotzeData(), jokalaria.getNAN(),                    
                 });
             }
         }
@@ -743,7 +755,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
             if (jokalaria.getTaldea().equals(aukeratutakoTaldea)) {
                 modeloIzquierda.addRow(new Object[]{
                     jokalaria.getIzena(), jokalaria.getAbizena(), jokalaria.getJaiotzeData(),
-                    jokalaria.getNAN(),
+                    jokalaria.getNAN(), jokalaria.getTaldea(), jokalaria.getPrezioa(),
                 });
             }
         }
@@ -784,7 +796,10 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         taldeakjokalariakIkusi.setVisible(true);
         sartuEmaitza.setVisible(baimenak.equals("Admin"));
         jokalariakAldatu.setVisible(baimenak.equals("Presidentea"));
+        
+        // BERRIA: Baimenak kudeatzea Hasiera paneleko botoientzat
         kudeaketaBotoia.setVisible(baimenak.equals("Admin"));
+        btnXML.setVisible(baimenak.equals("Presidentea"));
     }
     
     // ==========================================================
