@@ -31,16 +31,19 @@ import Modeloa.Taldea;
 
 public class Metodoak {
 
-    // ErabiltzaileakDao objektua datu-baseko erabiltzaileak kudeatzeko
     public static ErabiltzaileakDao edao = new ErabiltzaileakDao();
     
-    // Erabiltzaileak login metodoa
+    /**
+     * Erabiltzaile baten login-a egiaztatzen du datu-basean.
+     * * @param erabiltzailea Erabiltzailearen izena.
+     * @param pasahitza Erabiltzailearen pasahitza.
+     * @return Erabiltzailearen baimen-rola ("Admin", "Presidentea", "Arrunta") edo null okerra bada.
+     */
     public static String login (String erabiltzailea, String pasahitza) {
         ArrayList<ErabiltzaileMota> erabiltzaileaklist = edao.lortuErabiltzaileakODB();
         
         for (ErabiltzaileMota e : erabiltzaileaklist) {
             if (e.getErabiltzailea().equals(erabiltzailea) && e.getPasahitza().equals(pasahitza)) {
-                // Login zuzena denean, erregistroa idatzi fitxategian
                 idatziLog(e.getIzena() + " " + e.getAbizena(), erabiltzailea, e.baimenak());
                 return e.baimenak();
             }
@@ -48,7 +51,12 @@ public class Metodoak {
         return null;
     }
     
-    // Log fitxategia idazteko metodoa
+    /**
+     * Erabiltzaileen saio-hasierak (login) testu fitxategi batean erregistratzen ditu.
+     * * @param izenAbizenak Erabiltzailearen izen-abizenak.
+     * @param erabiltzailea Erabiltzailearen nick-a.
+     * @param rola Erabiltzailearen baimen mota.
+     */
     public static void idatziLog(String izenAbizenak, String erabiltzailea, String rola) {
         try {
             File fitxategia = new File("Login_Erregistroa.log");
@@ -71,7 +79,9 @@ public class Metodoak {
         }
     }
 
-    // XML fitxategia sortzeko metodoa
+    /**
+     * Ligako datu guztiak XML fitxategi batean esportatzen ditu.
+     */
     public static void sortuXMLFitxategia() {
         try {
             TaldeakDAO tdao = new TaldeakDAO();
@@ -85,7 +95,6 @@ public class Metodoak {
             Element root = doc.createElement("SaskibaloiLiga");
             doc.appendChild(root);
 
-            // --- TALDEAK ---
             Element taldeakNode = doc.createElement("Taldeak");
             root.appendChild(taldeakNode);
             for (Taldea t : tdao.lortuTaldeak()) {
@@ -96,7 +105,6 @@ public class Metodoak {
                 taldeakNode.appendChild(taldea);
             }
 
-            // --- JOKALARIAK ---
             Element jokalariakNode = doc.createElement("Jokalariak");
             root.appendChild(jokalariakNode);
             for (Jokalaria j : jdao.lortuJokalariak()) {
@@ -108,7 +116,6 @@ public class Metodoak {
                 jokalariakNode.appendChild(jokalaria);
             }
 
-            // --- PARTIDUAK ---
             Element partiduakNode = doc.createElement("Partiduak");
             root.appendChild(partiduakNode);
             for (Partidua p : pdao.lortuPartiduGuztiak()) {
@@ -133,7 +140,12 @@ public class Metodoak {
         }
     }
     
-    // Emaitzak balioztatzeko metodoa
+    /**
+     * Partidu baten emaitzak baliozkoak direla egiaztatzen du.
+     * * @param txtLok Talde lokalaren golak.
+     * @param txtBis Talde bisitariaren golak.
+     * @return Errore mezua edo null dena ondo badago.
+     */
     public static String balioztatuEmaitzak(String txtLok, String txtBis) {
         String mezua = null; 
         if ((txtLok.isEmpty() && !txtBis.isEmpty()) || (!txtLok.isEmpty() && txtBis.isEmpty())) {
@@ -152,14 +164,17 @@ public class Metodoak {
         return mezua; 
     }
 
-    // Klasifikazioa kalkulatzeko metodoa
+    /**
+     * Partiduen emaitzetan oinarrituta ligako sailkapen orokorra kalkulatzen du.
+     * * @param partiduakEmaitzekin Jokatutako partiduen zerrenda.
+     * @return Sailkapeneko taldeen zerrenda, puntuen arabera eguneratuta.
+     */
     public static ArrayList<Taldea> klasifikasioaKalkulatu(ArrayList<Partidua> partiduakEmaitzekin) {
         ArrayList<Taldea> klasifikasioa = new ArrayList<>();
         
         for(Partidua p : partiduakEmaitzekin) {
             if(p.getResulBisitari() != null && p.getResultLokala() != null) {
                 
-                // Bisitari taldea prozesatu
                 Taldea talL = new Taldea(p.getTaldeBisitari(), LocalDate.now(), "", 0);
                 if(!klasifikasioa.contains(talL)) {
                     talL.setPuntuakF(p.getResulBisitari());
@@ -190,7 +205,6 @@ public class Metodoak {
                     }
                 }
                 
-                // Lokal taldea prozesatu
                 Taldea talB = new Taldea(p.getTaldeLokala(), LocalDate.now(), "", 0);
                 if(!klasifikasioa.contains(talB)) {
                     talB.setPuntuakF(p.getResultLokala());

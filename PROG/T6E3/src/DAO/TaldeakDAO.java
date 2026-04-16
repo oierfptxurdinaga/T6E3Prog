@@ -10,14 +10,17 @@ import java.util.ArrayList;
 import DB.ConexionDB;
 import Modeloa.Taldea;
 
+/**
+ * TaldeakDAO klasea datu-baseko taldeak kudeatzeko erabiltzen da.
+ */
 public class TaldeakDAO {
 
 	private ConexionDB conexionDB = new ConexionDB();
 	
-	// --------------------------
-	// Taldeak lortzeko metodoa
-	// --------------------------
-	
+	/**
+	 * Datu-basean dauden talde guztiak eta haien informazioa lortzen ditu.
+	 * * @return Taldeen zerrenda.
+	 */
 	public ArrayList<Taldea> lortuTaldeak() {
         ArrayList<Taldea> listaTaldeak = new ArrayList<>();
         

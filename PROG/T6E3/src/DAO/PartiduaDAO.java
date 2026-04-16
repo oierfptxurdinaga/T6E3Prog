@@ -10,13 +10,21 @@ import java.util.ArrayList;
 import DB.ConexionDB;
 import Modeloa.Partidua;
 
+/**
+ * PartiduaDAO klasea datu-baseko partiduak kudeatzeko erabiltzen da.
+ * <p>
+ * Klase honek partiduak irakurri eta emaitzak eguneratzeko metodoak eskaintzen ditu.
+ * </p>
+ */
 public class PartiduaDAO {
 
     private ConexionDB conexionDB = new ConexionDB();
 
-    // -------------------------------------------------------------------
-    // Partiduak lortzeko metodoa, jornadako zenbakia erabiliz
-    // -------------------------------------------------------------------
+    /**
+     * Emandako jaurdunaldi zenbakiaren partidu guztiak datu-basetik lortzen ditu.
+     * * @param jornadaZenbakia Jaurdunaldiaren zenbakia.
+     * @return Jaurdunaldi horretako partiduen zerrenda.
+     */
     public ArrayList<Partidua> lortuJaurdunaldikoPartiduak(int jornadaZenbakia) {
     	
         ArrayList<Partidua> listaPartiduak = new ArrayList<>();
@@ -24,7 +32,6 @@ public class PartiduaDAO {
 
         if (conn == null) return listaPartiduak;
 
-        
         String sql = "SELECT p.* FROM partiduak p " +
                      "JOIN jaurdunaldia j ON p.Id_Jaurdu = j.Id_Jaurdu " +
                      "WHERE j.Zenbakia = ?";
@@ -39,14 +46,12 @@ public class PartiduaDAO {
                 String taldeLok = rs.getString("Talde_Lok");
                 String taldeBis = rs.getString("Talde_Bis");
                 
-                
                 int resLokDB = rs.getInt("Result_Lok");
                 Integer resultLok = rs.wasNull() ? null : resLokDB;
 
                 int resBisDB = rs.getInt("Result_Bis");
                 Integer resultBis = rs.wasNull() ? null : resBisDB;
 
-                
                 Partidua partidua = new Partidua(idPar, taldeLok, taldeBis, resultLok, resultBis);
                 listaPartiduak.add(partidua);
             }
@@ -60,9 +65,13 @@ public class PartiduaDAO {
         return listaPartiduak;
     }
 
-    // -------------------------------------------------------------------
-    // Partiduaren emaitzak eguneratzeko metodoa (aldatutako errenkadak bueltatzen ditu)
-    // -------------------------------------------------------------------
+    /**
+     * Partidu baten emaitzak datu-basean eguneratzen ditu.
+     * * @param idPar Partiduaren identifikatzailea datu-basean.
+     * @param resultLok Talde lokalaren golak.
+     * @param resultBis Talde bisitariaren golak.
+     * @return Datu-basean aldatutako errenkada kopurua.
+     */
     public int eguneratuEmaitza(int idPar, Integer resultLok, Integer resultBis) {
         int filasModificadas = 0; 
         Connection conn = conexionDB.conectar();
@@ -74,14 +83,12 @@ public class PartiduaDAO {
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            
             if (resultLok == null) {
                 pstmt.setNull(1, Types.INTEGER);
             } else {
                 pstmt.setInt(1, resultLok);
             }
 
-            
             if (resultBis == null) {
                 pstmt.setNull(2, Types.INTEGER);
             } else {
@@ -90,7 +97,6 @@ public class PartiduaDAO {
 
             pstmt.setInt(3, idPar); 
 
-            
             filasModificadas = pstmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -102,9 +108,10 @@ public class PartiduaDAO {
         return filasModificadas; 
     }
     
-    // -------------------------------
-    // Partidu guztien emaitzak lortu
-    // -------------------------------
+    /**
+     * Datu-basean erregistratuta dauden partidu guztiak lortzen ditu.
+     * * @return Partidu guztien zerrenda.
+     */
     public ArrayList<Partidua> lortuPartiduGuztiak() {
     	
         ArrayList<Partidua> listaPartiduak = new ArrayList<>();
@@ -112,7 +119,6 @@ public class PartiduaDAO {
 
         if (conn == null) return listaPartiduak;
 
-        
         String sql = "SELECT * FROM partiduak p ";
 
         try {

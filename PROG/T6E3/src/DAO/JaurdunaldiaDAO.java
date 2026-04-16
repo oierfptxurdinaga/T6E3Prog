@@ -8,14 +8,18 @@ import java.util.ArrayList;
 
 import DB.ConexionDB;
 
+/**
+ * JaurdunaldiaDAO klasea datu-baseko jaurdunaldiak kudeatzeko erabiltzen da.
+ */
 public class JaurdunaldiaDAO {
 
     private ConexionDB conexionDB = new ConexionDB();
     
-    // ----------------------------------------------------
-    // Jaurdunaldiak lortzeko metodoa 
-    // ----------------------------------------------------
-    
+    /**
+     * Datu-basean erregistratuta dauden jaurdunaldien zenbaki guztiak lortzen ditu, 
+     * orden gorakorrean (ASC).
+     * * @return Jaurdunaldien zenbakien zerrenda.
+     */
     public ArrayList<Integer> lortuJaurdunaldienZenbakiak() {
         ArrayList<Integer> listaZenbakiak = new ArrayList<>();
         
@@ -23,7 +27,6 @@ public class JaurdunaldiaDAO {
         
         if (conn == null) return listaZenbakiak;
 
-        
         String sql = "SELECT Zenbakia FROM jaurdunaldia ORDER BY Zenbakia ASC"; 
 
         try {
@@ -33,7 +36,6 @@ public class JaurdunaldiaDAO {
             while (rs.next()) {
                 
                 int zenbakia = rs.getInt("Zenbakia");
-                
                 
                 listaZenbakiak.add(zenbakia);
             }

@@ -11,14 +11,20 @@ import DB.ConexionDB;
 import Modeloa.Jokalaria;
 import Modeloa.Taldea;
 
+/**
+ * JokalariakDAO klasea datu-baseko jokalariak kudeatzeko erabiltzen da.
+ * <p>
+ * Jokalariak irakurri eta haien taldeak eguneratzeko aukera ematen du.
+ * </p>
+ */
 public class JokalariakDAO {
 
 	private ConexionDB conexionDB = new ConexionDB();
 	
-	// --------------------------
-	// Jokalariak lortzeko metodoa
-	// --------------------------
-	
+	/**
+	 * Datu-basean erregistratuta dauden jokalari guztiak lortzen ditu.
+	 * * @return Jokalarien zerrenda.
+	 */
 	public ArrayList<Jokalaria> lortuJokalariak() {
         ArrayList<Jokalaria> listaJokalariak = new ArrayList<>();
         
@@ -41,8 +47,6 @@ public class JokalariakDAO {
                 String Taldea = rs.getString("Talde_Izena");
                 int Prezioa = rs.getInt("Merka_Prezioa"); 
                 
-                
-                
                 Jokalaria jokalaria = new Jokalaria(Izena, Abizena, JaiotzeData, NAN, Taldea, Prezioa);
                 
                 listaJokalariak.add(jokalaria);
@@ -58,9 +62,12 @@ public class JokalariakDAO {
         return listaJokalariak;
     }
 	
-	// -------------------------------------------------
-	// Jokalariak talde batetik bestera aldatseko metodoa
-	// -------------------------------------------------
+	/**
+	 * Jokalari bat existitzen den talde batetik beste batera aldatzen du.
+	 * * @param j_NAN Aldatu nahi den jokalariaren NAN-a.
+	 * @param taldea Jokalaria sartuko den talde berriaren izena.
+	 * @return true aldaketa ondo burutu bada, false bestela.
+	 */
 	public boolean aldatu_jokalriak(String j_NAN, String taldea) {
         ArrayList<Jokalaria> listaJokalariak = new ArrayList<>();
         
@@ -68,7 +75,6 @@ public class JokalariakDAO {
         
         if (conn == null) return false;
         
-
         String sql = "UPDATE jokalariak SET Talde_Izena = ?\r\n"
         		+ "WHERE NAN = ?;";
         
@@ -89,4 +95,3 @@ public class JokalariakDAO {
 		}
     }
 }
-

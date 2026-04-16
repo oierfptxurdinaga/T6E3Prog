@@ -13,7 +13,11 @@ import Modeloa.ErabiltzaileMota;
 
 public class ErabiltzaileakDao {
 
-	public ArrayList<ErabiltzaileMota> lortuErabiltzaileakODB() {
+    /**
+     * ObjectDB datu-basetik erabiltzaile guztiak lortzen ditu.
+     * * @return Erabiltzaileen zerrenda.
+     */
+    public ArrayList<ErabiltzaileMota> lortuErabiltzaileakODB() {
         ArrayList<ErabiltzaileMota> listaErabiltzaileak = new ArrayList<>();
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("erabiltzaileak.odb");
         
@@ -37,6 +41,10 @@ public class ErabiltzaileakDao {
         return listaErabiltzaileak;
     }
 
+    /**
+     * Erabiltzaile berri bat gehitzen du datu-basean.
+     * * @param erabiltzailea Gehitu nahi den erabiltzailearen objektua.
+     */
     public void gehituErabiltzailea(ErabiltzaileMota erabiltzailea) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("erabiltzaileak.odb");
         EntityManager em = emf.createEntityManager();
@@ -52,14 +60,20 @@ public class ErabiltzaileakDao {
         }
     }
 
-    // BERRIA: Funtzio hau aldatu dugu JPA Query bat erabiltzeko. Modu honetan %100ean gordeko ditu aldaketak.
+    /**
+     * Existitzen den erabiltzaile baten datuak eguneratzen ditu datu-basean.
+     * * @param nan Erabiltzailearen identifikatzailea (NAN).
+     * @param izenBerria Izen berria.
+     * @param abizenBerria Abizen berria.
+     * @param erabBerria Nick edo erabiltzaile izen berria.
+     * @param pasahitzBerria Pasahitz berria.
+     */
     public void aldatuErabiltzailea(String nan, String izenBerria, String abizenBerria, String erabBerria, String pasahitzBerria) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("erabiltzaileak.odb");
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
             
-            // Zuzenean datu-baseari agindua bidali dena aldatzeko, cache-a edo "find" metodoak saihestuz
             Query query = em.createQuery(
                 "UPDATE ErabiltzaileMota e SET e.Izena = :izen, e.Abizena = :abizen, e.Erabiltzailea = :erab, e.Pasahitza = :pasa WHERE e.NAN = :nan"
             );
@@ -68,15 +82,11 @@ public class ErabiltzaileakDao {
             query.setParameter("abizen", abizenBerria);
             query.setParameter("erab", erabBerria);
             query.setParameter("pasa", pasahitzBerria);
-            query.setParameter("nan", nan.trim()); // trim() erabili zuriuneak kentzeko badaezpada
+            query.setParameter("nan", nan.trim());
             
-            int eguneratuak = query.executeUpdate(); // Zenbat lerro aldatu diren itzultzen du
+            query.executeUpdate(); 
             
             em.getTransaction().commit();
-            
-            if (eguneratuak == 0) {
-                System.out.println("KONTUZ: Ez da inor eguneratu. Ziurtatu NAN-a ondo dagoela: " + nan);
-            }
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,6 +96,10 @@ public class ErabiltzaileakDao {
         }
     }
 
+    /**
+     * Erabiltzaile bat datu-basetik ezabatzen du bere NAN-a erabiliz.
+     * * @param nan Ezabatu nahi den erabiltzailearen NAN-a.
+     */
     public void ezabatuErabiltzailea(String nan) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("erabiltzaileak.odb");
         EntityManager em = emf.createEntityManager();

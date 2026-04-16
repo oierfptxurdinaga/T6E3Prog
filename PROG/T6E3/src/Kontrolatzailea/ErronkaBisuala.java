@@ -599,7 +599,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
             cardLayout.show(contentPanel, "Kudeaketa");
             eguneratuErabiltzaileTaula();
 
-        // BERRIA: XML botoiaren ekintza
+        // XML botoiaren ekintza
         } else if (source == btnXML) {
             Metodoak.sortuXMLFitxategia();
             JOptionPane.showMessageDialog(this, "XML fitxategia ondo sortu da 'LigaDatuak.xml' izenarekin!");
@@ -731,6 +731,8 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
     // ==========================================================
     // 6. Tauleen eta combobox-aren metodoa
     // ==========================================================
+    
+    //Taldeen orrialdeko taula actualizatseko
     private void eguneratuTaulak(String aukeratutakoTaldea) {
         modeloPequena.setRowCount(0); 
         modeloGrande.setRowCount(0);
@@ -749,6 +751,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         }
     }
     
+    //Jokalariak taldes aldatseko orrialdeko taula actualizatseko
     private void eguneratuTaulaJokalariakAldatu(String aukeratutakoTaldea) {
         modeloIzquierda.setRowCount(0);
         for (Jokalaria jokalaria : jokalariak) {
@@ -761,6 +764,7 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
         }
     }
 
+    //Erabiltzaileak kudeatseko orrialdeko taula actualizatseko
     private void eguneratuErabiltzaileTaula() {
         modeloErabiltzaileak.setRowCount(0);
         erabiltzaileenZerrenda = edao.lortuErabiltzaileakODB(); 
@@ -771,7 +775,8 @@ public class ErronkaBisuala extends JFrame implements ActionListener, WindowList
             });
         }
     }
-
+    
+    //Erabiltzaile kudeaketako orrialdeko txt blokek garbitsen ditu
     private void garbituKudeaketaEremuak() {
         txtIzenKud.setText(""); txtAbizenKud.setText(""); txtNanKud.setText("");
         txtErabKud.setText(""); txtPasahitzKud.setText("");
