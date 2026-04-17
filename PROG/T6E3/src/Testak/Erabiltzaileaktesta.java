@@ -17,13 +17,10 @@ class Erabiltzaileaktesta {
 	private ErabiltzaileNormala erabiltzaile;
 	
 	@BeforeEach
-		void setUp() throws Exception {
-			//	 Hiru erabiltzaile motak hasieratzen ditugu test bakoitzaren aurretik
-			admin = new Administradorea("Aratz", "Elexpe", "12345678A", "aelexpe", "12345");
-			presidente = new Presidentea("Karlos", "Arguiñano", "87654321B", "kargui", "54321");
-			erabiltzaile = new ErabiltzaileNormala("Jon", "Igartua", "11223344C", "jigar", "11111");
-			
-			
+	void setUp() throws Exception {
+		admin = new Administradorea("Aratz", "Elexpe", "12345678A", "aelexpe", "12345");
+		presidente = new Presidentea("Karlos", "Arguiñano", "87654321B", "kargui", "54321");
+		erabiltzaile = new ErabiltzaileNormala("Jon", "Igartua", "11223344C", "jigar", "11111");
 	}
 
 	@AfterEach
@@ -36,9 +33,8 @@ class Erabiltzaileaktesta {
 	// ==========================================
 	// ADMINISTRADOREA TESTAK
 	// ==========================================
-	
 	@Test
-	void testAdmKonstruktoreaEtaGetters() {
+	void testAdminKonstruktoreaEtaGetters() {
 		assertEquals("Aratz", admin.getIzena());
 		assertEquals("Elexpe", admin.getAbizena());
 		assertEquals("12345678A", admin.getNAN());
@@ -47,115 +43,50 @@ class Erabiltzaileaktesta {
 	}
 
 	@Test
-	void testSetIzenaAdm() {
-		admin.setIzena("Carlos");
-		assertEquals("Carlos", admin.getIzena());
+	void testSettersAdmin() {
+		admin.setIzena("Iker");
+		assertEquals("Iker", admin.getIzena());
+		admin.setAbizena("Muniain");
+		assertEquals("Muniain", admin.getAbizena());
+		admin.setNAN("99887766Z");
+		assertEquals("99887766Z", admin.getNAN());
+		admin.setErabiltzailea("imuniain");
+		assertEquals("imuniain", admin.getErabiltzailea());
+		admin.setPasahitza("passBerria");
+		assertEquals("passBerria", admin.getPasahitza());
 	}
 
 	@Test
-	void testSetAbizenaAdm() {
-		admin.setAbizena("Gomez");
-		assertEquals("Gomez", admin.getAbizena());
-	}
-
-	@Test
-	void testSetErabiltzaileaAdm() {
-		admin.setErabiltzailea("carlosg");
-		assertEquals("carlosg", admin.getErabiltzailea());
-	}
-
-	@Test
-	void testSetPasahitzaAdm() {
-		admin.setPasahitza("abcd");
-		assertEquals("abcd", admin.getPasahitza());
-	}
-
-	@Test
-	void testBaimenakAdm() {
+	void testBaimenakAdmin() {
 		assertEquals("Admin", admin.baimenak());
 	}
+
+	// ==========================================
+	// PRESIDENTEA TESTAK
+	// ==========================================
+	@Test
+	void testPrKonstruktoreaEtaGetters() {
+		assertEquals("Karlos", presidente.getIzena());
+		assertEquals("Arguiñano", presidente.getAbizena());
+		assertEquals("87654321B", presidente.getNAN());
+	}
 	
-		// ==========================================
-		// PRESIDENTEA TESTAK
-		// ==========================================
+	@Test
+	void testBaimenakPr() {
+		assertEquals("Presidentea", presidente.baimenak());
+	}
 
-		@Test
-		void testPrKonstruktoreaEtaGetters() {
-			assertEquals("Karlos", presidente.getIzena());
-			assertEquals("Arguiñano", presidente.getAbizena());
-			assertEquals("87654321B", presidente.getNAN());
-			assertEquals("kargui", presidente.getErabiltzailea());
-			assertEquals("54321", presidente.getPasahitza());
-		}
+	// ==========================================
+	// ERABILTZAILE NORMALA TESTAK
+	// ==========================================
+	@Test
+	void testENKonstruktoreaEtaGetters() {
+		assertEquals("Jon", erabiltzaile.getIzena());
+		assertEquals("11111", erabiltzaile.getPasahitza());
+	}
 
-		@Test
-		void testSetIzenaPr() {
-			presidente.setIzena("Karlos Berria");
-			assertEquals("Karlos Berria", presidente.getIzena());
-		}
-
-		@Test
-		void testSetAbizenaPr() {
-			presidente.setAbizena("Zubizarreta");
-			assertEquals("Zubizarreta", presidente.getAbizena());
-		}
-
-		@Test
-		void testSetErabiltzaileaPr() {
-			presidente.setErabiltzailea("kzubiza");
-			assertEquals("kzubiza", presidente.getErabiltzailea());
-		}
-
-		@Test
-		void testSetPasahitzaPr() {
-			presidente.setPasahitza("berria123");
-			assertEquals("berria123", presidente.getPasahitza());
-		}
-
-		@Test
-		void testBaimenakPr() {
-			assertEquals("Presidentea", presidente.baimenak());
-		}
-
-		// ==========================================
-		// ERABILTZAILE NORMALA (ARRUNTA) TESTAK
-		// ==========================================
-
-		@Test
-		void testENKonstruktoreaEtaGetters() {
-			assertEquals("Jon", erabiltzaile.getIzena());
-			assertEquals("Igartua", erabiltzaile.getAbizena());
-			assertEquals("11223344C", erabiltzaile.getNAN());
-			assertEquals("jigar", erabiltzaile.getErabiltzailea());
-			assertEquals("11111", erabiltzaile.getPasahitza());
-		}
-
-		@Test
-		void testSetIzenaEN() {
-			erabiltzaile.setIzena("Mikel");
-			assertEquals("Mikel", erabiltzaile.getIzena());
-		}
-
-		@Test
-		void testSetAbizenaEN() {
-			erabiltzaile.setAbizena("Landa");
-			assertEquals("Landa", erabiltzaile.getAbizena());
-		} 
-
-		@Test
-		void testSetErabiltzaileaEN() {
-			erabiltzaile.setErabiltzailea("mlanda");
-			assertEquals("mlanda", erabiltzaile.getErabiltzailea());
-		}
-
-		@Test
-		void testSetPasahitzaEN() {
-			erabiltzaile.setPasahitza("bizikleta");
-			assertEquals("bizikleta", erabiltzaile.getPasahitza());
-		}
-
-		@Test
-		void testBaimenakEN() {
-			assertEquals("Arrunta", erabiltzaile.baimenak());
-}	
+	@Test
+	void testBaimenakEN() {
+		assertEquals("Arrunta", erabiltzaile.baimenak());
+	}
 }

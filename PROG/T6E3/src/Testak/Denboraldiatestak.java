@@ -31,43 +31,28 @@ class Denboraldiatestak {
 	void tearDown() throws Exception {
 		jaurdunaldiak = null;
 		puntuazioak = null;
+		denboraldia = null;
 	}
 
-	// ==========================================
-		// DENBORALDIA TESTAK
-		// ==========================================
-
-		@Test
-		void testDenKonstruktoreaEtaGetters() {
-			
+	@Test
+	void testDenKonstruktoreaEtaGetters() {
 		assertEquals(LocalDate.of(2024, 9, 1), denboraldia.getData());
 		assertEquals(jaurdunaldiak, denboraldia.getDenboraldia());
-		assertEquals (puntuazioak, denboraldia.getDenboraldiaP());
-		}
-		@Test
-		void testSetDataDen() {
-			
+		assertEquals(puntuazioak, denboraldia.getDenboraldiaP());
+	}
+	
+	@Test
+	void testSetters() {
 		LocalDate dataBerria = LocalDate.of(2025, 8, 15);
 		denboraldia.setData(dataBerria);
 		assertEquals(dataBerria, denboraldia.getData());
-		}
-
-
-		@Test
-		void testSetDenboraldia() {
-			
-		ArrayList<Jaurdunaldia> zerrendaBerria = new ArrayList<>();
-		denboraldia.setDenboraldia(zerrendaBerria);
-		assertEquals(zerrendaBerria, denboraldia.getDenboraldia());
-		}
-
-		@Test
-		void testSetDenboraldiaP() {
-				
-		ArrayList<Puntuazioa> zerrendaBerriaP = new ArrayList<>();
-		denboraldia.setDenboraldiaP(zerrendaBerriaP);
-		assertEquals(zerrendaBerriaP, denboraldia.getDenboraldiaP());
-		}
 		
-
+		ArrayList<Jaurdunaldia> jBerria = new ArrayList<>();
+		denboraldia.setDenboraldia(jBerria);
+		assertEquals(jBerria, denboraldia.getDenboraldia());
+		
+		ArrayList<Puntuazioa> pBerria = new ArrayList<>();
+		denboraldia.setDenboraldiaP(pBerria);
+		assertEquals(pBerria, denboraldia.getDenboraldiaP());
+	}
 }
